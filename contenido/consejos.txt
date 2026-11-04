@@ -1,0 +1,326 @@
+PERSONA|Duerme bien: un cerebro descansado programa el doble de rápido
+PERSONA|Toma agua antes de buscar más café o bebida energética
+PERSONA|Muévete un rato al día: caminar también ordena las ideas
+PERSONA|Escribe tres cosas por las que estás agradecido hoy
+PERSONA|Escucha para entender, no solo para responder
+PERSONA|Pedir perdón cuando te equivocas te hace más fuerte, no más débil
+PERSONA|Cumple lo que prometes, aunque sea algo chico
+PERSONA|Compárate con quien eras ayer, no con otros
+PERSONA|Pedir ayuda es de inteligentes, no de débiles
+PERSONA|Pasa tiempo con tu familia: no siempre van a estar ahí
+PERSONA|Trata a todos con respeto, incluso en el chat de un juego
+PERSONA|La honestidad te ahorra muchos problemas a largo plazo
+PERSONA|Ahorra aunque sea un poco de lo que ganes
+PERSONA|Está bien sentirse mal a veces. Háblalo con alguien de confianza
+PERSONA|Deja el celular 30 minutos antes de dormir
+PERSONA|Lee algo cada día, aunque sean dos páginas
+PERSONA|Una crítica puede doler, pero casi siempre trae algo útil
+PERSONA|Aprende a decir que no sin sentir culpa
+PERSONA|Sal al sol un rato: tu ánimo lo nota
+PERSONA|Ayuda a alguien hoy sin esperar nada a cambio
+PERSONA|Ordena tu escritorio: espacio ordenado, mente ordenada
+PERSONA|No tomes decisiones importantes cuando estás muy enojado
+PERSONA|Rodéate de gente que te empuje a ser mejor
+PERSONA|Reírte de tus errores te quita presión
+PERSONA|Di gracias más seguido; cambia cómo te tratan los demás
+PERSONA|Cuida tu postura cuando estás frente al PC
+PERSONA|Si alguien te enseña algo, agradécelo y compártelo después
+PERSONA|Ser amable no cuesta nada y vale muchísimo
+PERSONA|Aprende a perder en los juegos: también es aprender a crecer
+PERSONA|Los hábitos pequeños construyen a la persona que serás
+PERSONA|Habla bien de los demás cuando no están presentes
+PERSONA|Antes de responder enojado, cuenta hasta diez
+PERSONA|Pon metas, pero disfruta el camino
+PERSONA|Descansar no es perder el tiempo, es recargar
+PERSONA|Si algo te preocupa, escríbelo: se ve más pequeño en papel
+PERSONA|No necesitas tener todo claro para empezar
+PERSONA|Sé el amigo que te gustaría tener
+PERSONA|Cuida tus ojos: cada 20 minutos mira algo lejano por 20 segundos
+PERSONA|Comer bien también es parte de rendir bien
+PERSONA|Celebra los logros de tus amigos como si fueran tuyos
+PERSONA|Equivocarse es normal; repetir el error sin aprender, no
+PERSONA|Aprende inglés de a poco: abre muchísimas puertas
+PERSONA|Tu valor no depende de los likes ni de las visitas
+PERSONA|Respira profundo tres veces cuando te sientas abrumado
+PERSONA|Sé paciente contigo mismo: aprender toma tiempo
+PERSONA|Escucha más música que te dé energía cuando trabajes
+PERSONA|Haz algo que te asuste un poquito cada semana
+PERSONA|Cuando ayudas a otros a entender algo, tú lo entiendes mejor
+PERSONA|Pasa tiempo sin pantallas: tu creatividad lo agradece
+PERSONA|Sé agradecido con quienes juegan tus juegos
+PERSONA|La disciplina es elegir lo que quieres más por sobre lo que quieres ahora
+PERSONA|Evita el doomscrolling: pon un límite a TikTok
+PERSONA|Un buen día empieza con la cama hecha
+PERSONA|No guardes rencor: te pesa más a ti que al otro
+PERSONA|Cree en ti, incluso cuando otros no lo hagan todavía
+PERSONA|Cuida tu privacidad: no compartas datos personales en internet
+PERSONA|Tu salud mental importa tanto como tus proyectos
+PERSONA|Escribe tus metas del año y revísalas cada mes
+PERSONA|Aprende algo nuevo que no tenga nada que ver con programar
+PERSONA|Sonríe a la gente: es contagioso
+PROG|Lee el error completo: casi siempre te dice dónde está el problema
+PROG|Divide el problema grande en problemas chiquitos
+PROG|Escribe primero en palabras lo que debe hacer el código (pseudocódigo)
+PROG|Ponle nombres claros a tus variables: puntosJugador mejor que p
+PROG|Funciones cortas que hagan una sola cosa son más fáciles de arreglar
+PROG|Si copias y pegas el mismo código 3 veces, conviértelo en una función
+PROG|Explícale tu código a un patito de goma: encontrarás el error
+PROG|Usa print() para ver qué está pasando dentro de tu código
+PROG|Aprende a usar breakpoints: pausar el código es un superpoder
+PROG|Guarda tu proyecto en Git: es una máquina del tiempo
+PROG|Haz commits pequeños con mensajes que digan qué cambiaste
+PROG|Haz proyectos propios: los tutoriales solos no bastan
+PROG|Si llevas mucho rato atascado, descansa: la solución llega sola
+PROG|Lee la documentación oficial antes que videos viejos
+PROG|Comenta el por qué de tu código, no el qué
+PROG|Aprende vectores: son la base de casi todo en juegos
+PROG|Aprende a usar lerp para movimientos suaves
+PROG|math.sin sirve para hacer que algo flote o respire
+PROG|Usa estados (idle, correr, saltar) para organizar personajes
+PROG|Antes de optimizar, mide: no adivines dónde está el lag
+PROG|Haz que funcione, luego que sea bonito, luego que sea rápido
+PROG|Lee código de otros: aprenderás trucos nuevos
+PROG|Usa la IA como profe: pregúntale por qué, no solo qué copiar
+PROG|Entiende cada línea que pegas de internet
+PROG|Practica un poco todos los días: la programación es como un músculo
+PROG|Aprende atajos de teclado de tu editor
+PROG|Mantén tu código formateado igual en todos lados
+PROG|Evita variables globales: causan bugs difíciles de encontrar
+PROG|Cuando preguntes en un foro, muestra el código mínimo con el error
+PROG|Aprende tablas (tables) en Luau a fondo: se usan para todo
+PROG|Aprende a usar diccionarios para buscar cosas rápido
+PROG|Los números aleatorios con semilla permiten repetir resultados
+PROG|Un bug que no puedes repetir es casi imposible de arreglar: anota los pasos
+PROG|Renombrar y limpiar código (refactor) también es avanzar
+PROG|Escribe código pensando en quien lo leerá después: tú en 3 meses
+PROG|Crea un portafolio en GitHub con tus proyectos
+PROG|Aprende a leer el stack trace: muestra el camino del error
+PROG|Si algo funciona y no sabes por qué, investígalo
+PROG|Usa constantes para números mágicos: VELOCIDAD = 16
+PROG|Valida los datos que llegan antes de usarlos
+PROG|Haz pruebas pequeñas mientras programas, no todo al final
+PROG|Aprende un lenguaje a fondo antes de saltar a otro
+PROG|Después de Luau, prueba Python o C#: aprenderás mucho
+PROG|Programar es 70% pensar y 30% escribir
+PROG|Usa eventos en vez de revisar algo en un loop infinito
+PROG|Aprende qué es la complejidad O(n): te ayuda a evitar lag
+PROG|Guarda copias de seguridad fuera de tu PC
+PROG|Organiza tus archivos y carpetas desde el principio
+PROG|Aprende la diferencia entre valor y referencia en tablas
+PROG|Si tu función tiene muchos if anidados, simplifícala con returns tempranos
+PROG|Un buen nombre de función se lee como una frase: darMonedas(jugador, 10)
+PROG|Escribe una lista de tareas antes de abrir el editor
+PROG|Aprende expresiones regulares básicas o string patterns de Luau
+PROG|Los bugs no son tu enemigo: te enseñan cómo funciona tu código
+PROG|Aprende el producto punto: sirve para saber si algo está al frente o atrás
+PROG|Ver código en voz alta con un amigo (pair programming) acelera muchísimo
+PROG|Cada semana aprende una función nueva de la librería estándar
+PROG|Usa tipos en Luau para que el editor te avise errores
+PROG|No tengas miedo de borrar código malo y empezar de nuevo
+PROG|Haz retos de programación cortos para entrenar la lógica
+CONSTANCIA|No esperes motivación: empieza y la motivación llega después
+CONSTANCIA|Trabaja 25 minutos sin distracciones y descansa 5 (Pomodoro)
+CONSTANCIA|Pon una meta diaria tan chica que sea imposible no cumplirla
+CONSTANCIA|Termina juegos pequeños antes de intentar uno gigante
+CONSTANCIA|Escribe un devlog: ver tu progreso te motiva a seguir
+CONSTANCIA|Participa en una game jam: te obliga a terminar algo
+CONSTANCIA|Recorta funciones: un juego terminado vale más que uno perfecto a medias
+CONSTANCIA|Haz primero un prototipo feo que funcione
+CONSTANCIA|No cambies de proyecto cada semana: termina el actual
+CONSTANCIA|Agenda tus horas de crear como si fueran una clase
+CONSTANCIA|Mantén una racha: marca en un calendario cada día que avances
+CONSTANCIA|Comparte tu progreso con amigos: te comprometes más
+CONSTANCIA|Si un día no tienes ganas, haz solo 10 minutos
+CONSTANCIA|Haz una lista de tareas y tacha cada una al terminar
+CONSTANCIA|Prueba tu juego con alguien cada semana
+CONSTANCIA|El aburrimiento en medio del proyecto es normal: sigue igual
+CONSTANCIA|Guarda tus ideas nuevas en una lista para después
+CONSTANCIA|Define qué significa terminado antes de empezar
+CONSTANCIA|Avanzar 1% cada día es 37 veces mejor en un año
+CONSTANCIA|Deja una tarea fácil anotada para empezar mañana con impulso
+CONSTANCIA|Apaga notificaciones mientras creas
+CONSTANCIA|Celebra cada versión publicada, aunque sea pequeña
+CONSTANCIA|Ten un día libre a la semana para no quemarte
+CONSTANCIA|Los grandes juegos fueron primero prototipos chiquitos
+CONSTANCIA|Mira cuánto has aprendido en los últimos 3 meses
+CONSTANCIA|Ponle fecha de entrega a tu proyecto
+CONSTANCIA|Trabaja en lo más difícil cuando tengas más energía
+CONSTANCIA|Usa un tablero de tareas (Trello o una hoja) para tu juego
+CONSTANCIA|Publicar algo imperfecto te enseña más que guardarlo para siempre
+CONSTANCIA|Busca un compañero de proyecto que te mantenga activo
+CONSTANCIA|No compares tu capítulo 1 con el capítulo 20 de otro
+CONSTANCIA|Repite: hecho es mejor que perfecto
+CONSTANCIA|Cuando termines por hoy, deja el juego funcionando
+CONSTANCIA|Aprende de cada proyecto, aunque no tenga éxito
+CONSTANCIA|Mira tu juego como jugador una vez a la semana
+CONSTANCIA|Pon música sin letra para concentrarte mejor
+CONSTANCIA|Lleva un registro de horas que dedicas a crear
+CONSTANCIA|Las pausas cortas mantienen la mente fresca
+CONSTANCIA|Haz una versión 0.1 jugable lo antes posible
+CONSTANCIA|Si te atascas en arte, usa formas simples y sigue con la lógica
+CONSTANCIA|Elige un género que te guste mucho para no aburrirte
+CONSTANCIA|Ten tu espacio de trabajo listo para empezar sin excusas
+CONSTANCIA|Cada bug resuelto es una victoria: cuéntalas
+CONSTANCIA|El éxito de un juego muchas veces llega en la quinta actualización
+CONSTANCIA|Sigue a creadores que te inspiren, pero crea más de lo que miras
+ROBLOX|Usa ModuleScripts para no repetir el mismo código en varios scripts
+ROBLOX|Nunca confíes en el cliente: valida todo en el servidor
+ROBLOX|Con RemoteEvents comunicas cliente y servidor. Revisa siempre los datos que llegan
+ROBLOX|Guarda el progreso con DataStoreService y envuélvelo en pcall
+ROBLOX|Usa task.wait() en vez de wait(): es más preciso
+ROBLOX|Marca Anchored en las partes que no se mueven
+ROBLOX|Prueba con varios jugadores en Studio (pestaña Test) para encontrar bugs de multijugador
+ROBLOX|Los primeros 30 segundos deciden si alguien se queda: haz el inicio divertido
+ROBLOX|Una buena miniatura y un buen ícono suben mucho las visitas
+ROBLOX|TweenService hace animaciones suaves para la UI y los objetos
+ROBLOX|Scripts del servidor en ServerScriptService; lo compartido en ReplicatedStorage
+ROBLOX|Activa StreamingEnabled en mapas grandes para que cargue rápido en celular
+ROBLOX|Diseña la UI pensando en celular primero: ahí juega la mayoría
+ROBLOX|Con CollectionService (tags) un solo script controla muchos objetos iguales
+ROBLOX|Abre la consola con F9 para ver errores en partidas reales
+ROBLOX|Publica pronto y actualiza seguido: los jugadores vuelven por las novedades
+ROBLOX|Crea un grupo o Discord para tu juego y escucha a tu comunidad
+ROBLOX|Loop de juego claro: hacer algo, ganar recompensa, mejorar, repetir
+ROBLOX|Mira Analytics en el Creator Dashboard para ver dónde se van los jugadores
+ROBLOX|Evita while true sin espera: usa eventos o RunService.Heartbeat
+ROBLOX|Pon --!strict arriba de tus scripts Luau para atrapar errores antes
+ROBLOX|Menos partes = menos lag: usa MeshParts en vez de cientos de piezas
+ROBLOX|Sonidos y efectos hacen que tu juego se sienta vivo
+ROBLOX|Usa Attributes para guardar datos simples en objetos
+ROBLOX|Crea leaderstats (una carpeta dentro del jugador) para mostrar monedas en la tabla
+ROBLOX|ProximityPrompt crea botones de interactuar con E en segundos
+ROBLOX|Usa workspace:Raycast con RaycastParams para detectar qué hay frente a algo
+ROBLOX|Debris:AddItem borra objetos después de un tiempo sin bloquear el script
+ROBLOX|task.spawn y task.delay ejecutan cosas en paralelo sin congelar el juego
+ROBLOX|Usa WaitForChild en el cliente: las cosas pueden no haber cargado todavía
+ROBLOX|Los Developer Products sirven para compras repetibles; los Game Passes para permanentes
+ROBLOX|En ProcessReceipt entrega la compra y luego confirma: nunca al revés
+ROBLOX|Limita cuántas veces por segundo se puede usar un RemoteEvent para evitar abusos
+ROBLOX|Evita InvokeClient: si el cliente no responde, el servidor queda esperando
+ROBLOX|PathfindingService hace que los NPC esquiven obstáculos
+ROBLOX|UIListLayout y UIGridLayout ordenan botones solos
+ROBLOX|Usa Scale en vez de Offset para que la UI se vea bien en cualquier pantalla
+ROBLOX|UIAspectRatioConstraint evita que tus botones se deformen
+ROBLOX|Desactiva CanCollide, CanTouch y CanQuery en decoraciones para mejorar el rendimiento
+ROBLOX|Pon CollisionFidelity en Box para mallas decorativas complejas
+ROBLOX|Cuidado con modelos gratis del Toolbox: revisa que no traigan scripts raros
+ROBLOX|Busca require() con números raros en scripts: puede ser un virus
+ROBLOX|Usa Team Create para trabajar con amigos en el mismo juego
+ROBLOX|Rojo te deja programar Roblox en VS Code con Git
+ROBLOX|El MicroProfiler (Ctrl+F6) muestra qué está causando lag
+ROBLOX|El Highlight crea contornos brillantes para objetos importantes
+ROBLOX|ParticleEmitter y Beam le dan magia a habilidades y portales
+ROBLOX|Configura Lighting con Atmosphere para que tu mapa se vea pro
+ROBLOX|Usa SoundGroups para controlar el volumen de música y efectos por separado
+ROBLOX|BadgeService premia a los jugadores por logros: les encanta coleccionarlos
+ROBLOX|TeleportService permite tener varios lugares dentro de un mismo juego
+ROBLOX|Guarda datos solo cuando cambian o al salir, no cada segundo
+ROBLOX|Usa BindToClose para guardar datos cuando el servidor se cierra
+ROBLOX|Un tutorial corto dentro del juego retiene muchos más jugadores
+ROBLOX|Recompensas diarias hacen que los jugadores vuelvan cada día
+ROBLOX|Pon checkpoints frecuentes en los obbys: frustra menos
+ROBLOX|Haz que el jugador vea su progreso: barras, niveles y números que suben
+ROBLOX|Pon la tienda a la vista, pero sin obligar a pagar para disfrutar
+ROBLOX|Escribe notas de actualización para que la comunidad vea el avance
+ROBLOX|Prueba tu juego en celular, en PC y con control
+ROBLOX|ContextActionService crea botones en pantalla para celular automáticamente
+ROBLOX|Lee el Creator Hub de Roblox: tiene guías oficiales gratis
+ROBLOX|Pregunta en el DevForum de Roblox cuando te atasques
+ROBLOX|Usa GetPropertyChangedSignal para reaccionar cuando algo cambia
+ROBLOX|SetNetworkOwner(nil) da control al servidor de objetos importantes
+ROBLOX|Usa Terrain para crear islas y montañas rápido
+ROBLOX|Los eventos con tiempo limitado generan muchísima emoción en la comunidad
+ROBLOX|Haz pruebas A/B de miniaturas para ver cuál atrae más jugadores
+BLENDER|G mueve, R rota y S escala. Combínalos con X, Y o Z para un solo eje
+BLENDER|Tab cambia entre modo objeto y modo edición
+BLENDER|Ctrl+R hace un loop cut para agregar bordes
+BLENDER|E extruye caras, bordes o vértices
+BLENDER|I hace un inset: una cara dentro de otra
+BLENDER|Ctrl+B bisela los bordes para que no se vean tan duros
+BLENDER|Ctrl+A y luego All Transforms antes de exportar a Roblox
+BLENDER|Shift+A agrega objetos nuevos
+BLENDER|Shift+D duplica; Alt+D duplica compartiendo la misma malla
+BLENDER|H oculta lo seleccionado y Alt+H lo vuelve a mostrar
+BLENDER|La tecla / del teclado numérico aísla el objeto seleccionado
+BLENDER|El punto del teclado numérico centra la vista en lo seleccionado
+BLENDER|F3 busca cualquier comando si no recuerdas el atajo
+BLENDER|Z abre el menú de sombreado: sólido, material o render
+BLENDER|Ctrl+1, 2 o 3 agrega un modificador Subdivision rápido
+BLENDER|Shift+S abre el menú para mover el cursor 3D
+BLENDER|Ctrl+J une objetos y P los separa en modo edición
+BLENDER|K activa la herramienta cuchillo para cortar caras
+BLENDER|Alt+clic selecciona un loop completo de bordes
+BLENDER|L o Ctrl+L seleccionan todo lo conectado
+BLENDER|U abre el menú para desenvolver UVs
+BLENDER|Shift+N recalcula normales si algo se ve negro o raro
+BLENDER|M en modo edición une vértices (Merge by Distance limpia duplicados)
+BLENDER|El modificador Mirror te deja modelar solo la mitad
+BLENDER|Solidify le da grosor a una superficie plana
+BLENDER|Array repite objetos: perfecto para cercas y escaleras
+BLENDER|Decimate reduce triángulos para que tu malla pese menos en Roblox
+BLENDER|Roblox tiene límite de triángulos por malla: modela low poly
+BLENDER|Las texturas en Roblox se reducen a 1024x1024: no uses más
+BLENDER|Revisa la escala exportando un cubo de prueba a Roblox primero
+BLENDER|Pon el origen del objeto en un lugar lógico antes de exportar
+BLENDER|Exporta en FBX u OBJ para importar en Roblox Studio
+BLENDER|Usa una paleta de colores con pocos tonos para estilo low poly
+BLENDER|Aprende el modelado con referencias: pon imágenes de fondo
+BLENDER|Empieza con formas simples y agrega detalle de a poco
+BLENDER|Shade Auto Smooth suaviza sin perder bordes duros
+BLENDER|Bevel + Weighted Normal hace objetos que se ven profesionales
+BLENDER|Nombra tus objetos: Cubo.037 no ayuda a nadie
+BLENDER|Organiza en Collections como si fueran carpetas
+BLENDER|Ctrl+Espacio maximiza la ventana donde está el mouse
+BLENDER|Ctrl+Alt+0 del teclado numérico pone la cámara donde estás mirando
+BLENDER|F12 renderiza la imagen desde la cámara
+BLENDER|Usa Eevee para renders rápidos y Cycles para realismo
+BLENDER|Aprende a hacer UVs limpias: las texturas se verán mucho mejor
+BLENDER|Texture Paint te deja pintar directo sobre el modelo
+BLENDER|Para animar, aprende primero los keyframes con la tecla I
+BLENDER|Usa un rig sencillo para animar personajes que irán a Roblox
+BLENDER|Los Shape Keys sirven para caras y expresiones
+BLENDER|Guarda versiones: modelo_v1, modelo_v2. Te salvarán la vida
+BLENDER|Activa el guardado automático en Preferencias
+BLENDER|X o Supr borran; elige si vértices, bordes o caras
+BLENDER|Ctrl+I invierte la selección
+BLENDER|Ctrl+más del teclado numérico agranda la selección
+BLENDER|El modo de proporcional editing (O) mueve vértices suavemente
+BLENDER|Usa Snap (Shift+Tab) para alinear piezas exactas
+BLENDER|Mira tu modelo desde todos los ángulos antes de darlo por terminado
+BLENDER|Modela primero la silueta: si se reconoce de lejos, vas bien
+BLENDER|Pocas caras bien puestas valen más que muchas mal puestas
+BLENDER|Haz un modelo chico cada día durante 30 días: mejorarás muchísimo
+BLENDER|Practica con objetos de tu casa: una taza, una silla, una lámpara
+BLENDER|El donut es el tutorial clásico: hazlo una vez, aprenderás lo básico
+BLENDER|Geometry Nodes permite crear objetos de forma procedural
+BLENDER|Aprende a hacer un material con Principled BSDF
+BLENDER|Bake de texturas convierte detalles en una imagen para Roblox
+IDEA|¿Te gustaría crear un juego de heladería donde apilas bolas de helado? >> Paso 1: un cono que se mueve con el mouse o el dedo y bolas que caen del cielo >> Paso 2: si la bola cae sobre el cono se apila; si cae al piso pierdes una vida >> Paso 3: cada 10 bolas sube la velocidad y aparecen sabores especiales >> Paso 4: tienda de conos y toppings con las monedas ganadas >> Tip: guarda el récord con DataStore y muéstralo en una tabla global
+IDEA|¿Te gustaría crear un tycoon de pizzería? >> Paso 1: un horno que genera pizzas y una cinta que las lleva a la caja >> Paso 2: botones para comprar mejoras con el dinero ganado >> Paso 3: contrata ayudantes NPC que atienden clientes solos >> Paso 4: abre una segunda sucursal en otra zona del mapa >> Tip: usa un ModuleScript con la lista de mejoras y sus precios
+IDEA|¿Te gustaría crear un obby de colores? >> Paso 1: un piso de cuadros de colores y un letrero que muestra un color >> Paso 2: después de 5 segundos, desaparecen los cuadros de otros colores >> Paso 3: cada ronda el tiempo baja >> Paso 4: el último jugador en pie gana monedas >> Tip: maneja las rondas en el servidor con un ModuleScript de estados
+IDEA|¿Te gustaría crear un simulador de mascotas que evolucionan? >> Paso 1: huevos que se compran con monedas y dan mascotas al azar >> Paso 2: las mascotas te siguen y dan bonus de monedas >> Paso 3: juntar 3 iguales las fusiona en una versión dorada >> Paso 4: zonas nuevas desbloquean huevos más raros >> Tip: usa una tabla de probabilidades y muéstrala al jugador
+IDEA|¿Te gustaría crear un juego de escondidas transformándote en objetos? >> Paso 1: un buscador y varios escondidos por ronda >> Paso 2: los escondidos eligen un objeto del mapa y toman su forma >> Paso 3: el buscador tiene clics limitados para descubrirlos >> Paso 4: puntos por sobrevivir y por encontrar >> Tip: guarda una lista de objetos permitidos en ReplicatedStorage
+IDEA|¿Te gustaría crear una carrera en un mapa que se derrumba? >> Paso 1: una pista larga hecha de bloques >> Paso 2: los bloques empiezan a caer detrás del primer jugador >> Paso 3: agrega potenciadores de velocidad y saltos >> Paso 4: premios para los tres primeros >> Tip: usa TweenService para que los bloques tiemblen antes de caer
+IDEA|¿Te gustaría crear un juego de supervivencia en una isla? >> Paso 1: una isla con árboles y piedras que se pueden recolectar >> Paso 2: crafteo de herramientas con los recursos >> Paso 3: ciclo de día y noche; de noche aparecen enemigos >> Paso 4: construye una base para protegerte >> Tip: cambia Lighting.ClockTime en el servidor para el día y la noche
+IDEA|¿Te gustaría crear un tower defense con torres que se fusionan? >> Paso 1: un camino por donde avanzan enemigos >> Paso 2: torres que disparan al enemigo más cercano >> Paso 3: dos torres iguales se fusionan en una más fuerte >> Paso 4: oleadas con un jefe cada 10 rondas >> Tip: mueve a los enemigos por puntos del camino con un loop en el servidor
+IDEA|¿Te gustaría crear un juego de terror cooperativo? >> Paso 1: una escuela oscura con linternas >> Paso 2: un monstruo NPC con PathfindingService que patrulla >> Paso 3: los jugadores buscan llaves para abrir la salida >> Paso 4: sonidos que se acercan cuando el monstruo está cerca >> Tip: el silencio y la luz baja dan más miedo que los sustos fáciles
+IDEA|¿Te gustaría crear un juego de minijuegos aleatorios? >> Paso 1: un lobby donde esperan los jugadores >> Paso 2: una lista de minijuegos cortos de 1 minuto >> Paso 3: cada ronda se elige uno al azar y eliminan a los peores >> Paso 4: el último en pie gana la partida >> Tip: haz cada minijuego como un ModuleScript con funciones Iniciar y Terminar
+IDEA|¿Te gustaría crear un simulador de minería? >> Paso 1: un terreno de bloques que se pueden picar >> Paso 2: mientras más hondo, minerales más raros >> Paso 3: vende minerales para mejorar tu pico y tu mochila >> Paso 4: capas secretas con gemas legendarias >> Tip: genera los bloques por capas con números aleatorios y pesos
+IDEA|¿Te gustaría crear un juego de parkour con gancho? >> Paso 1: movimiento básico con wall-run en paredes marcadas >> Paso 2: un gancho que te balancea hacia puntos de anclaje >> Paso 3: niveles cronometrados con medallas de oro, plata y bronce >> Paso 4: tabla global de mejores tiempos >> Tip: usa constraints como RopeConstraint para el gancho
+IDEA|¿Te gustaría crear un juego de cocina en equipo? >> Paso 1: una cocina con estaciones: cortar, cocinar y servir >> Paso 2: pedidos que aparecen con tiempo límite >> Paso 3: los jugadores se pasan ingredientes entre ellos >> Paso 4: cada nivel trae una cocina más loca >> Tip: guarda las recetas en una tabla: nombre, ingredientes y tiempo
+IDEA|¿Te gustaría crear un escape room? >> Paso 1: una sala cerrada con una puerta y un candado >> Paso 2: pistas escondidas en cuadros, cajones y notas >> Paso 3: acertijos que cambian de respuesta cada partida >> Paso 4: varias salas con dificultad creciente >> Tip: ProximityPrompt es perfecto para revisar objetos
+IDEA|¿Te gustaría crear un juego de pesca? >> Paso 1: una caña que se lanza y un minijuego para atrapar >> Paso 2: peces comunes, raros y legendarios según la hora >> Paso 3: un acuario donde muestras tus peces >> Paso 4: eventos de pesca semanales >> Tip: usa la hora del servidor para decidir qué peces aparecen
+IDEA|¿Te gustaría crear una batalla de robots armables? >> Paso 1: piezas de robot: ruedas, armas y blindaje >> Paso 2: un taller para combinar piezas >> Paso 3: una arena donde los robots pelean >> Paso 4: piezas nuevas como recompensa >> Tip: usa WeldConstraint para unir las piezas
+IDEA|¿Te gustaría crear un mundo de llaves y zonas secretas? >> Paso 1: un mapa con puertas de distintos colores >> Paso 2: llaves escondidas que abren cada puerta >> Paso 3: cada zona tiene un desafío y una llave nueva >> Paso 4: una zona final secreta con un premio especial >> Tip: guarda qué llaves tiene cada jugador en DataStore
+IDEA|¿Te gustaría crear un simulador de delivery en moto? >> Paso 1: una ciudad pequeña y una moto manejable >> Paso 2: pedidos con un punto de recogida y uno de entrega >> Paso 3: propinas si llegas rápido >> Paso 4: mejoras para la moto y nuevos barrios >> Tip: usa un Beam o una flecha para guiar al jugador
+IDEA|¿Te gustaría crear un juego de jardín mágico? >> Paso 1: semillas que se plantan y crecen con el tiempo >> Paso 2: plantas que dan frutas para vender >> Paso 3: mutaciones raras al regar con pociones >> Paso 4: visitar el jardín de amigos >> Tip: guarda la hora de plantado y calcula el crecimiento al volver
+IDEA|¿Te gustaría crear un juego de dragones? >> Paso 1: un huevo de dragón que eclosiona >> Paso 2: alimentarlo para que crezca en etapas >> Paso 3: montarlo y volar por el mapa >> Paso 4: carreras aéreas entre jugadores >> Tip: usa AlignPosition y AlignOrientation para el vuelo
+IDEA|¿Te gustaría crear un juego de defensa del castillo? >> Paso 1: un castillo con murallas y una puerta >> Paso 2: oleadas de enemigos que intentan entrar >> Paso 3: los jugadores reparan murallas y usan cañones >> Paso 4: mejoras entre oleadas >> Tip: dale vida a la puerta con un atributo Health
+IDEA|¿Te gustaría crear un juego de carreras de autos chocones? >> Paso 1: autos simples con VehicleSeat >> Paso 2: una arena cerrada con obstáculos >> Paso 3: puntos por empujar a otros fuera de la arena >> Paso 4: potenciadores aleatorios en el piso >> Tip: prueba la física con varios jugadores, cambia mucho en multijugador
+IDEA|¿Te gustaría crear un juego de detectives? >> Paso 1: un crimen misterioso en una mansión >> Paso 2: pistas y testigos NPC con diálogos >> Paso 3: un tablero donde unes las pistas >> Paso 4: acusar al culpable correcto para ganar >> Tip: elige el culpable al azar cada partida para que se pueda repetir
+IDEA|¿Te gustaría crear un juego de magia con hechizos? >> Paso 1: tres hechizos básicos con teclas o botones >> Paso 2: combinar hechizos para crear nuevos >> Paso 3: duelos entre jugadores en una arena >> Paso 4: un libro de hechizos que se desbloquea >> Tip: haz cada hechizo como un ModuleScript con daño, costo y efecto
+IDEA|¿Te gustaría crear un juego de zoológico? >> Paso 1: compra animales y ponlos en recintos >> Paso 2: visitantes NPC que pagan por ver animales felices >> Paso 3: cuida comida, agua y limpieza >> Paso 4: animales raros en eventos >> Tip: muestra la felicidad de cada animal con una barra
+IDEA|¿Te gustaría crear un juego de ritmo? >> Paso 1: flechas que bajan al ritmo de una canción >> Paso 2: presionar en el momento justo da puntos >> Paso 3: combos y multiplicadores >> Paso 4: canciones nuevas desbloqueables >> Tip: usa Sound.TimePosition para sincronizar las flechas
+IDEA|¿Te gustaría crear un juego de construir torres? >> Paso 1: bloques que caen y el jugador los acomoda >> Paso 2: la torre puede caerse con la física >> Paso 3: viento que empuja cada cierto tiempo >> Paso 4: récord de altura global >> Tip: congela (Anchored) los bloques de abajo para evitar lag
+IDEA|¿Te gustaría crear un juego de espacio? >> Paso 1: una nave que vuela entre planetas >> Paso 2: recolectar recursos en cada planeta >> Paso 3: mejorar la nave para llegar más lejos >> Paso 4: una estación espacial con otros jugadores >> Tip: baja workspace.Gravity en los planetas pequeños
+IDEA|¿Te gustaría crear un juego de mascotas virtuales como yo? >> Paso 1: una mascota que te sigue y tiene hambre y energía >> Paso 2: comida, juegos y una cama para cuidarla >> Paso 3: la mascota aprende trucos al subir de nivel >> Paso 4: concursos de mascotas entre jugadores >> Tip: baja las necesidades con el tiempo usando la hora guardada

@@ -1,0 +1,12 @@
+# Clave de firma: NUNCA subirla. Sin ella no se pueden publicar actualizaciones.
+*.keystore
+*.jks
+
+# Archivos generados
+build/
+ClaudeWidget.apk
+
+# Contraseña de la firma (privada)
+firma.local
+*.idsig
+WidgetByClaude.apk
