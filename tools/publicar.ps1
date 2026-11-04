@@ -1,4 +1,4 @@
-# Publica una versión nueva de Widget by Claude en GitHub.
+﻿# Publica una versión nueva de Widget by Claude en GitHub.
 # 1) Sube versionCode/versionName en AndroidManifest.xml
 # 2) powershell -File tools\publicar.ps1 -Notas "Qué hay de nuevo"
 param([string]$Notas = "Mejoras y novedades")
