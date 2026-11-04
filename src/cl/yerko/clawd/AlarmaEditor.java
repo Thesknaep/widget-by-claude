@@ -31,7 +31,7 @@ public class AlarmaEditor extends Activity {
     private float d;
     private Alarmas.Alarma a;
     private NumberPicker hora, minuto, ampm;
-    private TextView sonara, vTono, vRepetir, vEtiqueta;
+    private TextView sonara, vTono, vPropio, vRepetir, vEtiqueta;
     private MediaPlayer prueba;
 
     @Override
@@ -113,6 +113,8 @@ public class AlarmaEditor extends Activity {
         opciones.setPadding(px(4), px(4), px(4), px(4));
         vTono = fila(opciones, "Tono", v -> elegirTono());
         separador(opciones);
+        vPropio = fila(opciones, "Tono personalizado", v -> elegirArchivo());
+        separador(opciones);
         vRepetir = fila(opciones, "Repetir", v -> elegirRepetir());
         separador(opciones);
         interruptor(opciones, "Vibrar al sonar", a.vibrar, on -> a.vibrar = on);
@@ -153,7 +155,9 @@ public class AlarmaEditor extends Activity {
 
     private void actualizar() {
         sonara.setText(Alarmas.faltaLargo(Alarmas.proxima(a, System.currentTimeMillis())));
-        vTono.setText(Tonos.nombre(this, a.tono) + "  ›");
+        boolean propio = a.tono != null && a.tono.startsWith("file:");
+        vTono.setText((propio ? "Personalizado" : Tonos.nombre(this, a.tono)) + "  ›");
+        vPropio.setText((propio ? "🎵 " + Tonos.nombre(this, a.tono) : "Elegir audio") + "  ›");
         vRepetir.setText(a.repeticion() + "  ›");
         vEtiqueta.setText(a.etiqueta + "  ›");
     }
@@ -190,7 +194,6 @@ public class AlarmaEditor extends Activity {
                     actualizar();
                 })
                 .setNegativeButton("Cancelar", null)
-                .setNeutralButton("🎵 Mi propio tono", (dlg, w) -> elegirArchivo())
                 .setOnDismissListener(x -> pararPrueba())
                 .show();
     }

@@ -1,6 +1,6 @@
 {
-    "versionCode":  22,
-    "versionName":  "22.0",
-    "apk":  "https://github.com/Thesknaep/widget-by-claude/releases/download/v22.0/WidgetByClaude.apk",
-    "notas":  "Nuevo: usa tu propia canción o audio como tono de alarma 🎵"
+    "versionCode":  23,
+    "versionName":  "23.0",
+    "apk":  "https://github.com/Thesknaep/widget-by-claude/releases/download/v23.0/WidgetByClaude.apk",
+    "notas":  "La opción Tono personalizado ahora está justo debajo de Tono en las alarmas 🎵"
 }
