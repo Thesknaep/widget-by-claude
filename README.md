@@ -22,3 +22,7 @@ La app revisa este repositorio:
 
 Formato de cada consejo: `CATEGORIA|texto` (categorías: PERSONA, PROG, CONSTANCIA, ROBLOX, BLENDER, IDEA).
 Las ideas pueden tener pasos separados con ` >> `.
+
+## Créditos
+
+Created by **[Thesknaep](https://github.com/Thesknaep)**, developer, con la ayuda de Claude ⚡

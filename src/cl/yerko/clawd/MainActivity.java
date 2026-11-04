@@ -80,6 +80,20 @@ public class MainActivity extends Activity {
         java.util.List<String[]> todas = new java.util.ArrayList<>();
         for (int i = 0; i < Skins.IDS.length; i++) todas.add(new String[]{Skins.IDS[i], Skins.NOMBRES[i]});
         for (Mascota.Datos m : Mascota.lista(this)) todas.add(new String[]{"p:" + m.id, m.nombre});
+
+        // "+ Crear la mía" va primero: diseña tu propia mascota en pixel art.
+        LinearLayout crear = tarjetaSkin(false);
+        TextView mas = texto("+", 40, NARANJA);
+        mas.setGravity(Gravity.CENTER);
+        crear.addView(mas, new LinearLayout.LayoutParams(px(84), px(66)));
+        TextView t = texto("Crear la mía", 12, NARANJA);
+        t.setGravity(Gravity.CENTER);
+        crear.addView(t, new LinearLayout.LayoutParams(px(96), -2));
+        crear.setOnClickListener(v -> startActivity(new android.content.Intent(this, PixelEditor.class)));
+        LinearLayout.LayoutParams lpc = new LinearLayout.LayoutParams(-2, -2);
+        lpc.rightMargin = px(8);
+        filaSkins.addView(crear, lpc);
+
         for (String[] sk : todas) {
             String id = sk[0], nombre = sk[1];
             boolean propia = Skins.propia(id);
@@ -121,17 +135,6 @@ public class MainActivity extends Activity {
             lp.rightMargin = px(8);
             filaSkins.addView(c, lp);
         }
-
-        // "+ Crear": diseña tu propia mascota en pixel art.
-        LinearLayout crear = tarjetaSkin(false);
-        TextView mas = texto("+", 40, NARANJA);
-        mas.setGravity(Gravity.CENTER);
-        crear.addView(mas, new LinearLayout.LayoutParams(px(84), px(66)));
-        TextView t = texto("Crear la mía", 12, NARANJA);
-        t.setGravity(Gravity.CENTER);
-        crear.addView(t, new LinearLayout.LayoutParams(px(96), -2));
-        crear.setOnClickListener(v -> startActivity(new android.content.Intent(this, PixelEditor.class)));
-        filaSkins.addView(crear, new LinearLayout.LayoutParams(-2, -2));
     }
 
     private LinearLayout tarjetaSkin(boolean sel) {
@@ -361,6 +364,36 @@ public class MainActivity extends Activity {
         version.setPadding(0, px(10), 0, px(10));
         version.setOnClickListener(v -> Actualizador.revisarAhora(this, true));
         col.addView(version, ancho(16));
+
+        // Créditos del developer.
+        LinearLayout creditos = new LinearLayout(this);
+        creditos.setOrientation(LinearLayout.VERTICAL);
+        creditos.setGravity(Gravity.CENTER_HORIZONTAL);
+        creditos.setPadding(px(16), px(16), px(16), px(16));
+        creditos.setBackground(fondo(TARJETA, 18));
+        ImageView logo = new ImageView(this);
+        logo.setImageResource(R.drawable.ic_launcher);
+        creditos.addView(logo, new LinearLayout.LayoutParams(px(56), px(56)));
+        TextView creado = texto("Created by Thesknaep", 18, CLARO);
+        creado.setGravity(Gravity.CENTER);
+        creditos.addView(creado, ancho(8));
+        TextView rol = texto("Developer · con la ayuda de Claude ⚡", 13, GRIS);
+        rol.setGravity(Gravity.CENTER);
+        creditos.addView(rol, ancho(2));
+        TextView github = texto("⭐ github.com/" + Actualizador.REPO, 14, NARANJA);
+        github.setGravity(Gravity.CENTER);
+        github.setPadding(px(14), px(10), px(14), px(10));
+        github.setBackground(fondo(0xFF2E2926, 14));
+        github.setOnClickListener(v -> {
+            try {
+                startActivity(new android.content.Intent(android.content.Intent.ACTION_VIEW,
+                        android.net.Uri.parse("https://github.com/" + Actualizador.REPO)));
+            } catch (Exception e) {
+                Toast.makeText(this, "No encontré un navegador", Toast.LENGTH_SHORT).show();
+            }
+        });
+        creditos.addView(github, ancho(12));
+        col.addView(creditos, ancho(12));
 
         ScrollView sv = new ScrollView(this);
         sv.setBackgroundColor(FONDO);
