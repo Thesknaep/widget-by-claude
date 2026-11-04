@@ -14,12 +14,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/** Mascotas diseñadas por el usuario en pixel art, con animaciones generadas automáticamente. */
+/**
+ * Mascotas diseñadas por el usuario en pixel art, con animaciones generadas automáticamente.
+ * Cada mascota tiene su propio tamaño de cuadrícula (16x12, 32x24 o 48x36, siempre 4:3)
+ * y ocupa el mismo espacio en el widget: a más pixeles, más chicos y más detalle.
+ */
 final class Mascota {
     static final int W = 16, H = 12;
+    static final int[][] TAMANOS = {{16, 12}, {32, 24}, {48, 36}};
     static final int OJO = 0;
     private static final String ALFABETO = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn";
-    private static final int U = 12;
+    private static final int U = 18;
 
     static final int[] PALETA = {
         0xFF101010, 0xFFD77757, 0xFFF2A65A, 0xFFFFE14D, 0xFFFFFFFF, 0xFFC9D1D9, 0xFF8B949E, 0xFF484F58,
@@ -31,11 +36,12 @@ final class Mascota {
     static final class Datos {
         String id;
         String nombre = "Mi mascota";
+        int w = W, h = H;
         int[] pal = PALETA.clone();
-        byte[] px = vacio();
+        byte[] px = vacio(W, H);
 
-        static byte[] vacio() {
-            byte[] b = new byte[W * H];
+        static byte[] vacio(int w, int h) {
+            byte[] b = new byte[w * h];
             java.util.Arrays.fill(b, (byte) -1);
             return b;
         }
@@ -57,11 +63,14 @@ final class Mascota {
                 Datos d = new Datos();
                 d.id = o.getString("id");
                 d.nombre = o.optString("nombre", "Mi mascota");
+                d.w = o.optInt("w", W);
+                d.h = o.optInt("h", H);
+                d.px = Datos.vacio(d.w, d.h);
                 JSONArray p = o.getJSONArray("pal");
                 d.pal = new int[p.length()];
                 for (int k = 0; k < p.length(); k++) d.pal[k] = (int) p.getLong(k);
                 String s = o.getString("px");
-                for (int k = 0; k < Math.min(s.length(), W * H); k++) {
+                for (int k = 0; k < Math.min(s.length(), d.w * d.h); k++) {
                     char ch = s.charAt(k);
                     d.px[k] = ch == '.' ? -1 : (byte) ALFABETO.indexOf(ch);
                 }
@@ -80,7 +89,8 @@ final class Mascota {
                 for (int v : d.pal) p.put(v & 0xFFFFFFFFL);
                 StringBuilder sb = new StringBuilder();
                 for (byte b : d.px) sb.append(b < 0 ? '.' : ALFABETO.charAt(b));
-                a.put(new JSONObject().put("id", d.id).put("nombre", d.nombre).put("pal", p).put("px", sb.toString()));
+                a.put(new JSONObject().put("id", d.id).put("nombre", d.nombre).put("w", d.w).put("h", d.h)
+                        .put("pal", p).put("px", sb.toString()));
             }
         } catch (Exception ignored) {
         }
@@ -119,17 +129,21 @@ final class Mascota {
             if (b != null) return b;
         }
         Datos d = buscar(c, id);
-        Bitmap b = d == null ? dibujar(PALETA, Datos.vacio(), pose) : dibujar(d.pal, d.px, pose);
+        Bitmap b = d == null ? dibujar(PALETA, Datos.vacio(W, H), W, H, pose) : dibujar(d.pal, d.px, d.w, d.h, pose);
         synchronized (CACHE) { CACHE.put(k, b); }
         return b;
     }
 
-    /** Dibuja un cuadro de animación en un lienzo de 18 x 14 unidades, igual que las demás skins. */
-    static Bitmap dibujar(int[] pal, byte[] px, char pose) {
+    /**
+     * Dibuja un cuadro de animación en un lienzo de 18 x 14 unidades, igual que las demás skins.
+     * La mascota siempre ocupa 16 x 12 unidades; cada pixel mide 16 / w unidades.
+     */
+    static Bitmap dibujar(int[] pal, byte[] px, int w, int h, char pose) {
         Bitmap bmp = Bitmap.createBitmap(18 * U, 14 * U, Bitmap.Config.ARGB_8888);
         Canvas cv = new Canvas(bmp);
         Paint p = new Paint();
         p.setAntiAlias(false);
+        float s = 16f / w;
 
         float tx = 1, ty = 2, sx = 1, sy = 1;
         boolean parpadeo = false, enojo = false;
@@ -144,44 +158,46 @@ final class Mascota {
             case 'D': enojo = true; tx -= 0.35f; break;
             default: break;
         }
-        float cx = tx + W / 2f, fondo = ty + H;
+        float cx = tx + 8f, fondo = ty + h * s;
 
-        for (int y = 0; y < H; y++) {
-            for (int x = 0; x < W; x++) {
-                int i = px[y * W + x];
+        for (int y = 0; y < h; y++) {
+            for (int x = 0; x < w; x++) {
+                int i = px[y * w + x];
                 if (i < 0 || i >= pal.length) continue;
                 int color = pal[i];
                 boolean ojo = i == OJO;
                 if (ojo && enojo) color = 0xFFE5484D;
-                if (ojo && parpadeo) color = vecino(pal, px, x, y);
-                float x0 = cx + (tx + x - cx) * sx, x1 = cx + (tx + x + 1 - cx) * sx;
-                float y0 = fondo - (fondo - (ty + y)) * sy, y1 = fondo - (fondo - (ty + y + 1)) * sy;
+                if (ojo && parpadeo) color = vecino(pal, px, w, h, x, y);
+                float ux0 = tx + x * s, ux1 = tx + (x + 1) * s;
+                float uy0 = ty + y * s, uy1 = ty + (y + 1) * s;
+                float x0 = cx + (ux0 - cx) * sx, x1 = cx + (ux1 - cx) * sx;
+                float y0 = fondo - (fondo - uy0) * sy, y1 = fondo - (fondo - uy1) * sy;
                 p.setColor(color);
                 cv.drawRect(new RectF(x0 * U, y0 * U, x1 * U + 0.5f, y1 * U + 0.5f), p);
                 if (ojo && parpadeo) {
                     p.setColor(0xFF101010);
                     float ly = y0 + (y1 - y0) * 0.55f;
-                    cv.drawRect(new RectF(x0 * U, ly * U, x1 * U + 0.5f, (ly + 0.3f) * U), p);
+                    cv.drawRect(new RectF(x0 * U, ly * U, x1 * U + 0.5f, (ly + (y1 - y0) * 0.3f) * U), p);
                 }
             }
         }
         return bmp;
     }
 
-    private static int vecino(int[] pal, byte[] px, int x, int y) {
+    private static int vecino(int[] pal, byte[] px, int w, int h, int x, int y) {
         int[][] dirs = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-        for (int r = 1; r < W; r++) {
+        for (int r = 1; r < w; r++) {
             for (int[] dd : dirs) {
                 int nx = x + dd[0] * r, ny = y + dd[1] * r;
-                if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue;
-                int i = px[ny * W + nx];
+                if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+                int i = px[ny * w + nx];
                 if (i > 0 && i < pal.length) return pal[i];
             }
         }
         return pal.length > 1 ? pal[1] : 0xFFD77757;
     }
 
-    /** Plantilla para empezar: un monito redondo naranja. */
+    /** Plantilla para empezar: un monito redondo naranja (16 x 12). */
     static byte[] plantilla() {
         String[] g = {
             "................",
@@ -197,7 +213,7 @@ final class Mascota {
             "....11....11....",
             "....11....11....",
         };
-        byte[] b = Datos.vacio();
+        byte[] b = Datos.vacio(W, H);
         for (int y = 0; y < H; y++)
             for (int x = 0; x < W; x++) {
                 char ch = g[y].charAt(x);

@@ -6,13 +6,11 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Convierte una foto (pixeles ARGB) en una mascota pixel art de 16 x 12:
- * quita el fondo, recorta, reduce y pasa a una paleta de pocos colores.
+ * Convierte una foto (pixeles ARGB) en una mascota pixel art (16x12, 32x24 o 48x36):
+ * quita el fondo (opcional), recorta, reduce y pasa a una paleta de pocos colores.
  * No usa clases de Android para poder probarla también en el PC.
  */
 final class FotoPixel {
-    static final int W = 16, H = 12;
-    private static final int COLORES = 8;
 
     static final class Resultado {
         int[] pal;
@@ -20,25 +18,46 @@ final class FotoPixel {
     }
 
     /**
-     * @param argb   pixeles de la foto (ancho x alto)
-     * @param pal    paleta actual (se reutilizan colores parecidos y se agregan los que falten)
-     * @param maxPal tamaño máximo de la paleta
+     * @param argb    pixeles de la foto (ancho x alto)
+     * @param pal     paleta base (se reutilizan colores parecidos y se agregan los que falten)
+     * @param maxPal  tamaño máximo de la paleta
+     * @param W       ancho de la cuadrícula de pixel art
+     * @param H       alto de la cuadrícula de pixel art
+     * @param quitar  true = quitar el fondo; false = usar la foto completa recortada al centro
      */
-    static Resultado convertir(int[] argb, int ancho, int alto, int[] pal, int maxPal) {
-        boolean[] fondo = quitarFondo(argb, ancho, alto);
+    static Resultado convertir(int[] argb, int ancho, int alto, int[] pal, int maxPal,
+                               int W, int H, boolean quitar) {
+        int COLORES = W >= 32 ? 14 : 8;
+        boolean[] fondo = quitar ? quitarFondo(argb, ancho, alto) : new boolean[argb.length];
 
-        // Recortar al objeto (lo que no es fondo).
+        // Si quitar el fondo dejó casi nada o casi todo, mejor usar la foto completa.
+        int objeto = 0;
+        for (boolean f : fondo) if (!f) objeto++;
+        if (quitar && (objeto < argb.length * 0.04f || objeto > argb.length * 0.97f)) {
+            fondo = new boolean[argb.length];
+            quitar = false;
+        }
+
         int x0 = ancho, y0 = alto, x1 = -1, y1 = -1;
-        for (int y = 0; y < alto; y++)
-            for (int x = 0; x < ancho; x++)
-                if (!fondo[y * ancho + x]) {
-                    x0 = Math.min(x0, x); y0 = Math.min(y0, y);
-                    x1 = Math.max(x1, x); y1 = Math.max(y1, y);
-                }
+        if (quitar) {
+            // Recortar al objeto (lo que no es fondo).
+            for (int y = 0; y < alto; y++)
+                for (int x = 0; x < ancho; x++)
+                    if (!fondo[y * ancho + x]) {
+                        x0 = Math.min(x0, x); y0 = Math.min(y0, y);
+                        x1 = Math.max(x1, x); y1 = Math.max(y1, y);
+                    }
+        } else {
+            // Foto completa: recorte centrado con la forma de la cuadrícula (4:3).
+            float rel = W / (float) H;
+            int cw = ancho, ch = Math.round(ancho / rel);
+            if (ch > alto) { ch = alto; cw = Math.round(alto * rel); }
+            x0 = (ancho - cw) / 2; y0 = (alto - ch) / 4; x1 = x0 + cw - 1; y1 = y0 + ch - 1;
+        }
         if (x1 < 0) { x0 = 0; y0 = 0; x1 = ancho - 1; y1 = alto - 1; Arrays.fill(fondo, false); }
         int cw = x1 - x0 + 1, ch = y1 - y0 + 1;
 
-        // Encajar en 16 x 12 sin deformar, centrado y apoyado en el suelo.
+        // Encajar en la cuadrícula sin deformar, centrado y apoyado en el suelo.
         float escala = Math.min(W / (float) cw, H / (float) ch);
         int gw = Math.max(1, Math.min(W, Math.round(cw * escala)));
         int gh = Math.max(1, Math.min(H, Math.round(ch * escala)));

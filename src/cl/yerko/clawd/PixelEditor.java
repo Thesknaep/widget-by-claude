@@ -36,7 +36,8 @@ public class PixelEditor extends Activity {
     private Mascota.Datos datos;
     private int color = 1, herramienta = LAPIZ;
     private boolean espejo = false;
-    private final ArrayDeque<byte[]> historial = new ArrayDeque<>();
+    // Cada estado guardado: {w, h} + paleta + pixeles, para que Deshacer funcione aunque cambie el tamaño.
+    private final ArrayDeque<Object[]> historial = new ArrayDeque<>();
     private Lienzo lienzo;
     private LinearLayout paleta, herramientas;
     private ImageView previa;
@@ -114,7 +115,7 @@ public class PixelEditor extends Activity {
     }
 
     private void animar() {
-        previa.setImageBitmap(Mascota.dibujar(datos.pal, datos.px, SEC_PREVIA.charAt(cuadro++ % SEC_PREVIA.length())));
+        previa.setImageBitmap(Mascota.dibujar(datos.pal, datos.px, datos.w, datos.h, SEC_PREVIA.charAt(cuadro++ % SEC_PREVIA.length())));
         h.postDelayed(this::animar, 180);
     }
 
@@ -125,7 +126,7 @@ public class PixelEditor extends Activity {
     }
 
     private void guardarHistorial() {
-        historial.push(datos.px.clone());
+        historial.push(new Object[]{new int[]{datos.w, datos.h}, datos.pal.clone(), datos.px.clone()});
         while (historial.size() > 40) historial.removeLast();
     }
 
@@ -145,12 +146,19 @@ public class PixelEditor extends Activity {
         herramienta(fila2, "📷", "Foto", false, v -> elegirFoto());
         herramienta(fila2, "↩️", "Deshacer", false, v -> {
             if (!historial.isEmpty()) {
-                datos.px = historial.pop();
+                Object[] e = historial.pop();
+                datos.w = ((int[]) e[0])[0];
+                datos.h = ((int[]) e[0])[1];
+                datos.pal = (int[]) e[1];
+                datos.px = (byte[]) e[2];
                 lienzo.invalidate();
+                pintarPaleta();
             }
         });
         herramienta(fila2, "🧩", "Plantilla", false, v -> {
             guardarHistorial();
+            datos.w = Mascota.W;
+            datos.h = Mascota.H;
             datos.px = Mascota.plantilla();
             lienzo.invalidate();
         });
@@ -158,7 +166,7 @@ public class PixelEditor extends Activity {
                 .setMessage("¿Borrar todo el dibujo?")
                 .setPositiveButton("Borrar", (x, w) -> {
                     guardarHistorial();
-                    datos.px = Mascota.Datos.vacio();
+                    datos.px = Mascota.Datos.vacio(datos.w, datos.h);
                     lienzo.invalidate();
                 })
                 .setNegativeButton("Cancelar", null).show());
@@ -184,16 +192,57 @@ public class PixelEditor extends Activity {
         super.onActivityResult(req, res, data);
         if (req != PEDIR_FOTO || res != RESULT_OK || data == null || data.getData() == null) return;
         android.net.Uri uri = data.getData();
+        opcionesFoto(uri);
+    }
+
+    /** Antes de convertir: elegir el detalle (tamaño de la cuadrícula) y si quitar el fondo. */
+    private void opcionesFoto(android.net.Uri uri) {
+        String[] nombres = {"Clásico · 16 × 12 (pixeles grandes)", "Detallado · 32 × 24 (recomendado)",
+                "Muy detallado · 48 × 36 (pixeles chicos)"};
+        final int[] sel = {1};
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setPadding(px(20), px(4), px(20), 0);
+        android.widget.RadioGroup grupo = new android.widget.RadioGroup(this);
+        for (int i = 0; i < nombres.length; i++) {
+            android.widget.RadioButton rb = new android.widget.RadioButton(this);
+            rb.setText(nombres[i]);
+            rb.setTextColor(CLARO);
+            rb.setId(1000 + i);
+            grupo.addView(rb);
+        }
+        grupo.check(1001);
+        grupo.setOnCheckedChangeListener((g, id) -> sel[0] = id - 1000);
+        box.addView(grupo);
+        android.widget.CheckBox fondoCb = new android.widget.CheckBox(this);
+        fondoCb.setText("Quitar el fondo automáticamente");
+        fondoCb.setTextColor(CLARO);
+        fondoCb.setChecked(true);
+        LinearLayout.LayoutParams lf = new LinearLayout.LayoutParams(-1, -2);
+        lf.topMargin = px(10);
+        box.addView(fondoCb, lf);
+        TextView ayuda = texto("Desmárcalo si la foto tiene mucho fondo o el recorte sale raro: se usará la foto completa.", 12, GRIS);
+        box.addView(ayuda);
+        new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
+                .setTitle("📷 ¿Cómo la convierto?")
+                .setView(box)
+                .setPositiveButton("Convertir", (d, w) ->
+                        convertirFoto(uri, Mascota.TAMANOS[sel[0]][0], Mascota.TAMANOS[sel[0]][1], fondoCb.isChecked()))
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
+    private void convertirFoto(android.net.Uri uri, int gw, int gh, boolean quitar) {
         Toast.makeText(this, "Convirtiendo tu foto en pixel art…", Toast.LENGTH_SHORT).show();
         new Thread(() -> {
             FotoPixel.Resultado r = null;
             try {
-                android.graphics.Bitmap bmp = cargar(uri, 256);
+                android.graphics.Bitmap bmp = cargar(uri, 320);
                 if (bmp != null) {
                     int w = bmp.getWidth(), h = bmp.getHeight();
                     int[] argb = new int[w * h];
                     bmp.getPixels(argb, 0, w, 0, 0, w, h);
-                    r = FotoPixel.convertir(argb, w, h, datos.pal, Mascota.MAX_COLORES);
+                    r = FotoPixel.convertir(argb, w, h, Mascota.PALETA, Mascota.MAX_COLORES, gw, gh, quitar);
                 }
             } catch (Exception ignored) {
             }
@@ -204,6 +253,8 @@ public class PixelEditor extends Activity {
                     return;
                 }
                 guardarHistorial();
+                datos.w = gw;
+                datos.h = gh;
                 datos.pal = fr.pal;
                 datos.px = fr.px;
                 lienzo.invalidate();
@@ -398,51 +449,51 @@ public class PixelEditor extends Activity {
 
         Lienzo(Context c) { super(c); }
 
-        private float celda() { return Math.min(getWidth() / (float) Mascota.W, getHeight() / (float) Mascota.H); }
+        private float celda() { return Math.min(getWidth() / (float) datos.w, getHeight() / (float) datos.h); }
 
         @Override
         protected void onDraw(Canvas c) {
             float s = celda();
-            float ox = (getWidth() - s * Mascota.W) / 2, oy = (getHeight() - s * Mascota.H) / 2;
-            for (int y = 0; y < Mascota.H; y++) {
-                for (int x = 0; x < Mascota.W; x++) {
-                    int i = datos.px[y * Mascota.W + x];
+            float ox = (getWidth() - s * datos.w) / 2, oy = (getHeight() - s * datos.h) / 2;
+            for (int y = 0; y < datos.h; y++) {
+                for (int x = 0; x < datos.w; x++) {
+                    int i = datos.px[y * datos.w + x];
                     p.setColor(i >= 0 && i < datos.pal.length ? datos.pal[i]
                             : ((x + y) % 2 == 0 ? 0xFF2E2926 : 0xFF353029));
                     c.drawRect(ox + x * s, oy + y * s, ox + (x + 1) * s, oy + (y + 1) * s, p);
                 }
             }
-            p.setColor(0x22FFFFFF);
-            for (int x = 0; x <= Mascota.W; x++) c.drawRect(ox + x * s, oy, ox + x * s + 1, oy + s * Mascota.H, p);
-            for (int y = 0; y <= Mascota.H; y++) c.drawRect(ox, oy + y * s, ox + s * Mascota.W, oy + y * s + 1, p);
+            p.setColor(datos.w > 16 ? 0x10FFFFFF : 0x22FFFFFF);
+            for (int x = 0; x <= datos.w; x++) c.drawRect(ox + x * s, oy, ox + x * s + 1, oy + s * datos.h, p);
+            for (int y = 0; y <= datos.h; y++) c.drawRect(ox, oy + y * s, ox + s * datos.w, oy + y * s + 1, p);
             if (espejo) {
                 p.setColor(0x55D77757);
-                float mx = ox + s * Mascota.W / 2;
-                c.drawRect(mx - 1, oy, mx + 1, oy + s * Mascota.H, p);
+                float mx = ox + s * datos.w / 2;
+                c.drawRect(mx - 1, oy, mx + 1, oy + s * datos.h, p);
             }
         }
 
         @Override
         public boolean onTouchEvent(MotionEvent e) {
             float s = celda();
-            float ox = (getWidth() - s * Mascota.W) / 2, oy = (getHeight() - s * Mascota.H) / 2;
+            float ox = (getWidth() - s * datos.w) / 2, oy = (getHeight() - s * datos.h) / 2;
             int x = (int) ((e.getX() - ox) / s), y = (int) ((e.getY() - oy) / s);
             if (e.getAction() == MotionEvent.ACTION_DOWN) {
                 getParent().requestDisallowInterceptTouchEvent(true);
                 guardarHistorial();
                 ultimo = -1;
             }
-            if (x >= 0 && y >= 0 && x < Mascota.W && y < Mascota.H) {
-                int celdaIdx = y * Mascota.W + x;
+            if (x >= 0 && y >= 0 && x < datos.w && y < datos.h) {
+                int celdaIdx = y * datos.w + x;
                 if (herramienta == BALDE) {
                     if (e.getAction() == MotionEvent.ACTION_DOWN) {
                         rellenar(x, y);
-                        if (espejo) rellenar(Mascota.W - 1 - x, y);
+                        if (espejo) rellenar(datos.w - 1 - x, y);
                     }
                 } else if (celdaIdx != ultimo) {
                     byte v = herramienta == BORRAR ? -1 : (byte) color;
                     datos.px[celdaIdx] = v;
-                    if (espejo) datos.px[y * Mascota.W + (Mascota.W - 1 - x)] = v;
+                    if (espejo) datos.px[y * datos.w + (datos.w - 1 - x)] = v;
                     ultimo = celdaIdx;
                 }
                 invalidate();
@@ -455,7 +506,7 @@ public class PixelEditor extends Activity {
         public boolean performClick() { return super.performClick(); }
 
         private void rellenar(int x0, int y0) {
-            byte destino = datos.px[y0 * Mascota.W + x0];
+            byte destino = datos.px[y0 * datos.w + x0];
             byte nuevo = (byte) color;
             if (destino == nuevo) return;
             ArrayDeque<int[]> cola = new ArrayDeque<>();
@@ -463,8 +514,8 @@ public class PixelEditor extends Activity {
             while (!cola.isEmpty()) {
                 int[] q = cola.poll();
                 int x = q[0], y = q[1];
-                if (x < 0 || y < 0 || x >= Mascota.W || y >= Mascota.H) continue;
-                int k = y * Mascota.W + x;
+                if (x < 0 || y < 0 || x >= datos.w || y >= datos.h) continue;
+                int k = y * datos.w + x;
                 if (datos.px[k] != destino) continue;
                 datos.px[k] = nuevo;
                 cola.add(new int[]{x + 1, y});
