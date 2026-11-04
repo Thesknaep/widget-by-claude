@@ -35,7 +35,7 @@ public class PixelEditor extends Activity {
     private float d;
     private Mascota.Datos datos;
     private int color = 1, herramienta = LAPIZ;
-    private boolean espejo = true;
+    private boolean espejo = false;
     private final ArrayDeque<byte[]> historial = new ArrayDeque<>();
     private Lienzo lienzo;
     private LinearLayout paleta, herramientas;

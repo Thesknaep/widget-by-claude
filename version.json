@@ -1,6 +1,6 @@
 {
-    "versionCode":  23,
-    "versionName":  "23.0",
-    "apk":  "https://github.com/Thesknaep/widget-by-claude/releases/download/v23.0/WidgetByClaude.apk",
-    "notas":  "La opción Tono personalizado ahora está justo debajo de Tono en las alarmas 🎵"
+    "versionCode":  24,
+    "versionName":  "24.0",
+    "apk":  "https://github.com/Thesknaep/widget-by-claude/releases/download/v24.0/WidgetByClaude.apk",
+    "notas":  "Arreglo: en Crear la mía ahora solo viene seleccionado el lápiz (el espejo empieza apagado)"
 }
