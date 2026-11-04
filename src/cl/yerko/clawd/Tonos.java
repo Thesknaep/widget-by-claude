@@ -46,6 +46,11 @@ final class Tonos {
 
     static List<Tono> todos(Context c) {
         List<Tono> out = new ArrayList<>();
+        File[] propios = dirPropios(c).listFiles();
+        if (propios != null) {
+            java.util.Arrays.sort(propios, (x, y) -> Long.compare(y.lastModified(), x.lastModified()));
+            for (File f : propios) out.add(new Tono("file:" + f.getName(), "🎵 " + sinExtension(f.getName())));
+        }
         for (int i = 0; i < NOMBRES.length; i++) out.add(new Tono("app:" + i, "🎮 " + NOMBRES[i]));
         try {
             RingtoneManager rm = new RingtoneManager(c);
@@ -62,8 +67,55 @@ final class Tonos {
         return out;
     }
 
+    // ---------- tonos personalizados (audios del usuario) ----------
+
+    static File dirPropios(Context c) {
+        File d = new File(c.getFilesDir(), "tonos_propios");
+        if (!d.exists()) d.mkdirs();
+        return d;
+    }
+
+    static String sinExtension(String n) {
+        int p = n.lastIndexOf('.');
+        return p > 0 ? n.substring(0, p) : n;
+    }
+
+    /**
+     * Copia un audio elegido por el usuario dentro de la app, para que la alarma siga sonando
+     * aunque el archivo original se mueva o se borre. Devuelve el id del tono o null si falla.
+     */
+    static String importar(Context c, Uri uri) {
+        String nombre = "Mi tono";
+        try (Cursor cur = c.getContentResolver().query(uri,
+                new String[]{android.provider.OpenableColumns.DISPLAY_NAME}, null, null, null)) {
+            if (cur != null && cur.moveToFirst() && cur.getString(0) != null) nombre = cur.getString(0);
+        } catch (Exception ignored) {
+        }
+        nombre = nombre.replaceAll("[\\\\/:*?\"<>|]", "_");
+        if (!nombre.contains(".")) nombre += ".mp3";
+        File destino = new File(dirPropios(c), nombre);
+        long max = 30L * 1024 * 1024;
+        try (java.io.InputStream in = c.getContentResolver().openInputStream(uri);
+             FileOutputStream o = new FileOutputStream(destino)) {
+            if (in == null) return null;
+            byte[] buf = new byte[65536];
+            long total = 0;
+            int n;
+            while ((n = in.read(buf)) > 0) {
+                total += n;
+                if (total > max) throw new Exception("muy grande");
+                o.write(buf, 0, n);
+            }
+        } catch (Exception e) {
+            destino.delete();
+            return null;
+        }
+        return "file:" + destino.getName();
+    }
+
     static String nombre(Context c, String id) {
         if (id == null) id = DEFECTO;
+        if (id.startsWith("file:")) return sinExtension(id.substring(5));
         if (id.startsWith("app:")) {
             try { return NOMBRES[Integer.parseInt(id.substring(4))]; } catch (Exception e) { return NOMBRES[0]; }
         }
@@ -79,6 +131,11 @@ final class Tonos {
     static Object fuente(Context c, String id) {
         if (id == null) id = DEFECTO;
         if (id.startsWith("sys:")) return Uri.parse(id.substring(4));
+        if (id.startsWith("file:")) {
+            File f = new File(dirPropios(c), id.substring(5));
+            if (f.exists()) return f;
+            id = DEFECTO;
+        }
         int i;
         try { i = Integer.parseInt(id.substring(4)); } catch (Exception e) { i = 0; }
         if (i < 0 || i >= MELODIAS.length) i = 0;

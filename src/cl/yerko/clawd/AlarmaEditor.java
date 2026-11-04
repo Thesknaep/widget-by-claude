@@ -2,6 +2,7 @@ package cl.yerko.clawd;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.media.MediaPlayer;
@@ -189,8 +190,46 @@ public class AlarmaEditor extends Activity {
                     actualizar();
                 })
                 .setNegativeButton("Cancelar", null)
+                .setNeutralButton("🎵 Mi propio tono", (dlg, w) -> elegirArchivo())
                 .setOnDismissListener(x -> pararPrueba())
                 .show();
+    }
+
+    private static final int PEDIR_AUDIO = 77;
+
+    /** Abre el selector de archivos del teléfono para elegir cualquier canción o audio. */
+    private void elegirArchivo() {
+        Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT)
+                .addCategory(Intent.CATEGORY_OPENABLE)
+                .setType("audio/*");
+        try {
+            startActivityForResult(i, PEDIR_AUDIO);
+        } catch (Exception e) {
+            Toast.makeText(this, "No encontré un selector de archivos", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int req, int res, Intent data) {
+        super.onActivityResult(req, res, data);
+        if (req != PEDIR_AUDIO || res != RESULT_OK || data == null || data.getData() == null) return;
+        android.net.Uri uri = data.getData();
+        Toast.makeText(this, "Agregando tu tono…", Toast.LENGTH_SHORT).show();
+        new Thread(() -> {
+            String id = Tonos.importar(this, uri);
+            runOnUiThread(() -> {
+                if (id == null) {
+                    Toast.makeText(this, "No pude usar ese audio (máximo 30 MB)", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                a.tono = id;
+                actualizar();
+                pararPrueba();
+                prueba = AlarmaService.reproducir(this, id, true);
+                Toast.makeText(this, "🎵 Tono: " + Tonos.nombre(this, id), Toast.LENGTH_LONG).show();
+                new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(this::pararPrueba, 4000);
+            });
+        }).start();
     }
 
     private void pararPrueba() {
