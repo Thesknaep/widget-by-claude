@@ -1,6 +1,6 @@
 {
-    "versionCode":  26,
-    "versionName":  "26.0",
-    "apk":  "https://github.com/Thesknaep/widget-by-claude/releases/download/v26.0/WidgetByClaude.apk",
-    "notas":  "📷 Foto a pixel art mejorado: elige 32×24 o 48×36 pixeles para que tu foto se reconozca, y si quieres quitar el fondo o usar la foto completa"
+    "versionCode":  27,
+    "versionName":  "27.0",
+    "apk":  "https://github.com/Thesknaep/widget-by-claude/releases/download/v27.0/WidgetByClaude.apk",
+    "notas":  "📷 Foto: nuevo modo Súper detallado 64×48 y el fondo se quita automáticamente"
 }

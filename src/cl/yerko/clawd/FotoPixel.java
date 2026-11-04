@@ -27,7 +27,7 @@ final class FotoPixel {
      */
     static Resultado convertir(int[] argb, int ancho, int alto, int[] pal, int maxPal,
                                int W, int H, boolean quitar) {
-        int COLORES = W >= 32 ? 14 : 8;
+        int COLORES = W >= 64 ? 16 : W >= 32 ? 14 : 8;
         boolean[] fondo = quitar ? quitarFondo(argb, ancho, alto) : new boolean[argb.length];
 
         // Si quitar el fondo dejó casi nada o casi todo, mejor usar la foto completa.
@@ -181,7 +181,7 @@ final class FotoPixel {
             if (!fondo[i]) quedan++;
             if (!fondo[i] && !porGrupos[i]) quedanAmbos++;
         }
-        if (quedanAmbos > quedan * 0.35f) {
+        if (quedanAmbos > quedan * 0.25f) {
             for (int i = 0; i < fondo.length; i++) fondo[i] = fondo[i] || porGrupos[i];
         }
         return objetoPrincipal(fondo, ancho, alto);
@@ -208,14 +208,23 @@ final class FotoPixel {
             }
             grupo[i] = m;
         }
-        int[] enBorde = new int[k];
-        int borde = 0;
+        // Cuánto aparece cada grupo de color en las orillas y en el centro de la foto.
+        int[] enBorde = new int[k], enCentro = new int[k];
+        int borde = 0, centro = 0;
+        int mx = Math.max(1, ancho / 12), my = Math.max(1, alto / 12);
         for (int i = 0; i < n; i++) {
             int x = i % ancho, y = i / ancho;
-            if (x == 0 || y == 0 || x == ancho - 1 || y == alto - 1) { enBorde[grupo[i]]++; borde++; }
+            if (x < mx || y < my || x >= ancho - mx || y >= alto - my) { enBorde[grupo[i]]++; borde++; }
+            if (x > ancho * 0.3f && x < ancho * 0.7f && y > alto * 0.25f && y < alto * 0.75f) {
+                enCentro[grupo[i]]++; centro++;
+            }
         }
         boolean[] esFondo = new boolean[k];
-        for (int q = 0; q < k; q++) esFondo[q] = enBorde[q] > borde * 0.08f;
+        for (int q = 0; q < k; q++) {
+            float b = enBorde[q] / (float) Math.max(1, borde), c = enCentro[q] / (float) Math.max(1, centro);
+            // Fondo: colores que dominan las orillas, o que están en las orillas y casi no en el centro.
+            esFondo[q] = b > 0.08f && b > c * 0.8f || (b > 0.01f && c < 0.04f);
+        }
         boolean[] fondo = new boolean[n];
         for (int i = 0; i < n; i++) fondo[i] = esFondo[grupo[i]];
         return objetoPrincipal(fondo, ancho, alto);

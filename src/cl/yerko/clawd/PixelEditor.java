@@ -195,10 +195,10 @@ public class PixelEditor extends Activity {
         opcionesFoto(uri);
     }
 
-    /** Antes de convertir: elegir el detalle (tamaño de la cuadrícula) y si quitar el fondo. */
+    /** Antes de convertir: elegir el detalle (tamaño de la cuadrícula). El fondo se quita siempre. */
     private void opcionesFoto(android.net.Uri uri) {
         String[] nombres = {"Clásico · 16 × 12 (pixeles grandes)", "Detallado · 32 × 24 (recomendado)",
-                "Muy detallado · 48 × 36 (pixeles chicos)"};
+                "Muy detallado · 48 × 36 (pixeles chicos)", "Súper detallado · 64 × 48 (máximo detalle)"};
         final int[] sel = {1};
         LinearLayout box = new LinearLayout(this);
         box.setOrientation(LinearLayout.VERTICAL);
@@ -214,20 +214,16 @@ public class PixelEditor extends Activity {
         grupo.check(1001);
         grupo.setOnCheckedChangeListener((g, id) -> sel[0] = id - 1000);
         box.addView(grupo);
-        android.widget.CheckBox fondoCb = new android.widget.CheckBox(this);
-        fondoCb.setText("Quitar el fondo automáticamente");
-        fondoCb.setTextColor(CLARO);
-        fondoCb.setChecked(true);
+        TextView ayuda = texto("✨ El fondo se quita automáticamente. Funciona mejor con fotos donde se vea "
+                + "la mascota completa y con buena luz.", 12, GRIS);
         LinearLayout.LayoutParams lf = new LinearLayout.LayoutParams(-1, -2);
         lf.topMargin = px(10);
-        box.addView(fondoCb, lf);
-        TextView ayuda = texto("Desmárcalo si la foto tiene mucho fondo o el recorte sale raro: se usará la foto completa.", 12, GRIS);
-        box.addView(ayuda);
+        box.addView(ayuda, lf);
         new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
-                .setTitle("📷 ¿Cómo la convierto?")
+                .setTitle("📷 ¿Cuánto detalle quieres?")
                 .setView(box)
                 .setPositiveButton("Convertir", (d, w) ->
-                        convertirFoto(uri, Mascota.TAMANOS[sel[0]][0], Mascota.TAMANOS[sel[0]][1], fondoCb.isChecked()))
+                        convertirFoto(uri, Mascota.TAMANOS[sel[0]][0], Mascota.TAMANOS[sel[0]][1], true))
                 .setNegativeButton("Cancelar", null)
                 .show();
     }
@@ -237,7 +233,7 @@ public class PixelEditor extends Activity {
         new Thread(() -> {
             FotoPixel.Resultado r = null;
             try {
-                android.graphics.Bitmap bmp = cargar(uri, 320);
+                android.graphics.Bitmap bmp = cargar(uri, gw >= 64 ? 448 : 320);
                 if (bmp != null) {
                     int w = bmp.getWidth(), h = bmp.getHeight();
                     int[] argb = new int[w * h];

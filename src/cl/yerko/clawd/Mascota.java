@@ -16,15 +16,15 @@ import java.util.Map;
 
 /**
  * Mascotas diseñadas por el usuario en pixel art, con animaciones generadas automáticamente.
- * Cada mascota tiene su propio tamaño de cuadrícula (16x12, 32x24 o 48x36, siempre 4:3)
+ * Cada mascota tiene su propio tamaño de cuadrícula (16x12, 32x24, 48x36 o 64x48, siempre 4:3)
  * y ocupa el mismo espacio en el widget: a más pixeles, más chicos y más detalle.
  */
 final class Mascota {
     static final int W = 16, H = 12;
-    static final int[][] TAMANOS = {{16, 12}, {32, 24}, {48, 36}};
+    static final int[][] TAMANOS = {{16, 12}, {32, 24}, {48, 36}, {64, 48}};
     static final int OJO = 0;
     private static final String ALFABETO = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn";
-    private static final int U = 18;
+    private static final int U = 24;
 
     static final int[] PALETA = {
         0xFF101010, 0xFFD77757, 0xFFF2A65A, 0xFFFFE14D, 0xFFFFFFFF, 0xFFC9D1D9, 0xFF8B949E, 0xFF484F58,
