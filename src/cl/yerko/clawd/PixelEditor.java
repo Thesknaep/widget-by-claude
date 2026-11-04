@@ -131,22 +131,30 @@ public class PixelEditor extends Activity {
 
     private void pintarHerramientas() {
         herramientas.removeAllViews();
-        herramienta(herramientas, "✏️", "Lápiz", herramienta == LAPIZ, v -> { herramienta = LAPIZ; pintarHerramientas(); });
-        herramienta(herramientas, "🧽", "Borrar", herramienta == BORRAR, v -> { herramienta = BORRAR; pintarHerramientas(); });
-        herramienta(herramientas, "🪣", "Rellenar", herramienta == BALDE, v -> { herramienta = BALDE; pintarHerramientas(); });
-        herramienta(herramientas, "🪞", "Espejo", espejo, v -> { espejo = !espejo; pintarHerramientas(); });
-        herramienta(herramientas, "↩️", "Deshacer", false, v -> {
+        herramientas.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout fila1 = new LinearLayout(this), fila2 = new LinearLayout(this);
+        herramientas.addView(fila1, new LinearLayout.LayoutParams(-1, -2));
+        LinearLayout.LayoutParams l2 = new LinearLayout.LayoutParams(-1, -2);
+        l2.topMargin = px(6);
+        herramientas.addView(fila2, l2);
+
+        herramienta(fila1, "✏️", "Lápiz", herramienta == LAPIZ, v -> { herramienta = LAPIZ; pintarHerramientas(); });
+        herramienta(fila1, "🧽", "Borrar", herramienta == BORRAR, v -> { herramienta = BORRAR; pintarHerramientas(); });
+        herramienta(fila1, "🪣", "Rellenar", herramienta == BALDE, v -> { herramienta = BALDE; pintarHerramientas(); });
+        herramienta(fila1, "🪞", "Espejo", espejo, v -> { espejo = !espejo; pintarHerramientas(); });
+        herramienta(fila2, "📷", "Foto", false, v -> elegirFoto());
+        herramienta(fila2, "↩️", "Deshacer", false, v -> {
             if (!historial.isEmpty()) {
                 datos.px = historial.pop();
                 lienzo.invalidate();
             }
         });
-        herramienta(herramientas, "🧩", "Plantilla", false, v -> {
+        herramienta(fila2, "🧩", "Plantilla", false, v -> {
             guardarHistorial();
             datos.px = Mascota.plantilla();
             lienzo.invalidate();
         });
-        herramienta(herramientas, "🗑️", "Limpiar", false, v -> new AlertDialog.Builder(this)
+        herramienta(fila2, "🗑️", "Limpiar", false, v -> new AlertDialog.Builder(this)
                 .setMessage("¿Borrar todo el dibujo?")
                 .setPositiveButton("Borrar", (x, w) -> {
                     guardarHistorial();
@@ -154,6 +162,96 @@ public class PixelEditor extends Activity {
                     lienzo.invalidate();
                 })
                 .setNegativeButton("Cancelar", null).show());
+    }
+
+    // ---------- foto a pixel art ----------
+
+    private static final int PEDIR_FOTO = 88;
+
+    private void elegirFoto() {
+        android.content.Intent i = new android.content.Intent(android.content.Intent.ACTION_GET_CONTENT)
+                .addCategory(android.content.Intent.CATEGORY_OPENABLE)
+                .setType("image/*");
+        try {
+            startActivityForResult(android.content.Intent.createChooser(i, "Elige una foto"), PEDIR_FOTO);
+        } catch (Exception e) {
+            Toast.makeText(this, "No encontré la galería", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int req, int res, android.content.Intent data) {
+        super.onActivityResult(req, res, data);
+        if (req != PEDIR_FOTO || res != RESULT_OK || data == null || data.getData() == null) return;
+        android.net.Uri uri = data.getData();
+        Toast.makeText(this, "Convirtiendo tu foto en pixel art…", Toast.LENGTH_SHORT).show();
+        new Thread(() -> {
+            FotoPixel.Resultado r = null;
+            try {
+                android.graphics.Bitmap bmp = cargar(uri, 256);
+                if (bmp != null) {
+                    int w = bmp.getWidth(), h = bmp.getHeight();
+                    int[] argb = new int[w * h];
+                    bmp.getPixels(argb, 0, w, 0, 0, w, h);
+                    r = FotoPixel.convertir(argb, w, h, datos.pal, Mascota.MAX_COLORES);
+                }
+            } catch (Exception ignored) {
+            }
+            final FotoPixel.Resultado fr = r;
+            runOnUiThread(() -> {
+                if (fr == null) {
+                    Toast.makeText(this, "No pude abrir esa foto", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                guardarHistorial();
+                datos.pal = fr.pal;
+                datos.px = fr.px;
+                lienzo.invalidate();
+                pintarPaleta();
+                new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
+                        .setTitle("📷 ¡Listo!")
+                        .setMessage("Tu foto ya es pixel art.\n\n"
+                                + "• Pinta los ojos con 👁 Ojo para que parpadee y se enoje.\n"
+                                + "• Si quedó algo del fondo, bórralo con 🧽.\n"
+                                + "• Funciona mejor con fotos de fondo liso.\n"
+                                + "• ↩️ Deshacer vuelve a como estaba.")
+                        .setPositiveButton("Entendido", null)
+                        .show();
+            });
+        }).start();
+    }
+
+    /** Abre la foto reducida (máx. lado = max px) y corrige la rotación de la cámara. */
+    private android.graphics.Bitmap cargar(android.net.Uri uri, int max) throws Exception {
+        android.graphics.BitmapFactory.Options o = new android.graphics.BitmapFactory.Options();
+        o.inJustDecodeBounds = true;
+        try (java.io.InputStream in = getContentResolver().openInputStream(uri)) {
+            android.graphics.BitmapFactory.decodeStream(in, null, o);
+        }
+        int muestra = 1;
+        while (Math.max(o.outWidth, o.outHeight) / (muestra * 2) >= max) muestra *= 2;
+        android.graphics.BitmapFactory.Options o2 = new android.graphics.BitmapFactory.Options();
+        o2.inSampleSize = muestra;
+        android.graphics.Bitmap b;
+        try (java.io.InputStream in = getContentResolver().openInputStream(uri)) {
+            b = android.graphics.BitmapFactory.decodeStream(in, null, o2);
+        }
+        if (b == null) return null;
+        int giro = 0;
+        try (java.io.InputStream in = getContentResolver().openInputStream(uri)) {
+            int or = new android.media.ExifInterface(in).getAttributeInt(
+                    android.media.ExifInterface.TAG_ORIENTATION, android.media.ExifInterface.ORIENTATION_NORMAL);
+            if (or == android.media.ExifInterface.ORIENTATION_ROTATE_90) giro = 90;
+            else if (or == android.media.ExifInterface.ORIENTATION_ROTATE_180) giro = 180;
+            else if (or == android.media.ExifInterface.ORIENTATION_ROTATE_270) giro = 270;
+        } catch (Exception ignored) {
+        }
+        float esc = Math.min(1f, max / (float) Math.max(b.getWidth(), b.getHeight()));
+        android.graphics.Matrix m = new android.graphics.Matrix();
+        m.postScale(esc, esc);
+        m.postRotate(giro);
+        android.graphics.Bitmap r = android.graphics.Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(), m, true);
+        return r.copy(android.graphics.Bitmap.Config.ARGB_8888, false);
     }
 
     private void herramienta(LinearLayout padre, String icono, String nombre, boolean activa, View.OnClickListener cl) {
