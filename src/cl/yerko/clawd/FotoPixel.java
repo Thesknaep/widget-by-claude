@@ -48,11 +48,8 @@ final class FotoPixel {
                         x1 = Math.max(x1, x); y1 = Math.max(y1, y);
                     }
         } else {
-            // Foto completa: recorte centrado con la forma de la cuadrícula (4:3).
-            float rel = W / (float) H;
-            int cw = ancho, ch = Math.round(ancho / rel);
-            if (ch > alto) { ch = alto; cw = Math.round(alto * rel); }
-            x0 = (ancho - cw) / 2; y0 = (alto - ch) / 4; x1 = x0 + cw - 1; y1 = y0 + ch - 1;
+            // Foto tal cual: la foto entera, sin recortar nada (se encaja completa en la cuadrícula).
+            x0 = 0; y0 = 0; x1 = ancho - 1; y1 = alto - 1;
         }
         if (x1 < 0) { x0 = 0; y0 = 0; x1 = ancho - 1; y1 = alto - 1; Arrays.fill(fondo, false); }
         int cw = x1 - x0 + 1, ch = y1 - y0 + 1;

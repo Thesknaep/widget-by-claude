@@ -214,16 +214,30 @@ public class PixelEditor extends Activity {
         grupo.check(1001);
         grupo.setOnCheckedChangeListener((g, id) -> sel[0] = id - 1000);
         box.addView(grupo);
-        TextView ayuda = texto("✨ El fondo se quita automáticamente. Funciona mejor con fotos donde se vea "
-                + "la mascota completa y con buena luz.", 12, GRIS);
+
+        TextView tFondo = texto("Fondo", 15, NARANJA);
         LinearLayout.LayoutParams lf = new LinearLayout.LayoutParams(-1, -2);
-        lf.topMargin = px(10);
-        box.addView(ayuda, lf);
+        lf.topMargin = px(14);
+        box.addView(tFondo, lf);
+        android.widget.RadioGroup fondoG = new android.widget.RadioGroup(this);
+        String[] fondos = {"✂️ Quitar el fondo (solo la mascota)", "🖼️ Foto tal cual (completa, con fondo)"};
+        for (int i = 0; i < fondos.length; i++) {
+            android.widget.RadioButton rb = new android.widget.RadioButton(this);
+            rb.setText(fondos[i]);
+            rb.setTextColor(CLARO);
+            rb.setId(2000 + i);
+            fondoG.addView(rb);
+        }
+        fondoG.check(2000);
+        box.addView(fondoG);
+        TextView ayuda = texto("Quitar el fondo funciona mejor con fotos donde se vea la mascota completa y con buena luz.", 12, GRIS);
+        box.addView(ayuda);
         new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
-                .setTitle("📷 ¿Cuánto detalle quieres?")
+                .setTitle("📷 ¿Cómo la convierto?")
                 .setView(box)
                 .setPositiveButton("Convertir", (d, w) ->
-                        convertirFoto(uri, Mascota.TAMANOS[sel[0]][0], Mascota.TAMANOS[sel[0]][1], true))
+                        convertirFoto(uri, Mascota.TAMANOS[sel[0]][0], Mascota.TAMANOS[sel[0]][1],
+                                fondoG.getCheckedRadioButtonId() == 2000))
                 .setNegativeButton("Cancelar", null)
                 .show();
     }
