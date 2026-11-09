@@ -23,6 +23,8 @@ public class MainActivity extends Activity {
 
     private float d;
     private EditText peso, estatura;
+    private Button btnHombre, btnMujer;
+    private String sexoSel = "";
     private TextView meta, progreso;
     private ProgressBar barra;
     private LinearLayout vineta, formulario;
@@ -30,6 +32,47 @@ public class MainActivity extends Activity {
     private Button cancelar;
     private LinearLayout listaAlarmas;
     private LinearLayout filaSkins;
+    private LinearLayout mochila;
+
+    /** Colección de ítems: los que ya tocaste se ven a color con cuántas veces; los demás, en sombra. */
+    private void pintarMochila() {
+        // La tarjeta trae su título como primer hijo; se conserva.
+        while (mochila.getChildCount() > 1) mochila.removeViewAt(1);
+        int distintos = Items.distintos(this), total = Items.IDS.length;
+        TextView resumen = texto("🪙 " + Items.monedas(this) + " monedas   ·   " + distintos + " / " + total
+                + " ítems descubiertos", 15, CLARO);
+        mochila.addView(resumen, ancho(4));
+        mochila.addView(texto("Toca el ítem que tiene tu mascota en la mano en el widget: cada uno hace algo distinto.",
+                12, GRIS), ancho(2));
+        int porFila = 5;
+        LinearLayout fila = null;
+        for (int i = 0; i < total; i++) {
+            if (i % porFila == 0) {
+                fila = new LinearLayout(this);
+                mochila.addView(fila, ancho(8));
+            }
+            int veces = Items.veces(this, i);
+            LinearLayout c = new LinearLayout(this);
+            c.setOrientation(LinearLayout.VERTICAL);
+            c.setGravity(Gravity.CENTER_HORIZONTAL);
+            c.setPadding(px(4), px(8), px(4), px(6));
+            c.setBackground(fondo(0xFF2E2926, 12));
+            ImageView img = new ImageView(this);
+            img.setImageResource(Items.drawable(this, i));
+            if (veces == 0) {
+                img.setColorFilter(0xFF3A3431, android.graphics.PorterDuff.Mode.SRC_IN);
+            }
+            c.addView(img, new LinearLayout.LayoutParams(px(32), px(32)));
+            TextView n = texto(veces == 0 ? "???" : Items.NOMBRES[i] + "\n×" + veces, 10, veces == 0 ? 0xFF6E625B : CLARO);
+            n.setGravity(Gravity.CENTER);
+            c.addView(n, new LinearLayout.LayoutParams(-1, -2));
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, -2, 1f);
+            lp.setMargins(px(3), 0, px(3), 0);
+            fila.addView(c, lp);
+        }
+        int resto = (porFila - total % porFila) % porFila;
+        for (int i = 0; i < resto; i++) fila.addView(new View(this), new LinearLayout.LayoutParams(0, 1, 1f));
+    }
     private TextView hola;
 
     /** Pide el nombre de quien usa la app. La primera vez es obligatorio. */
@@ -213,6 +256,13 @@ public class MainActivity extends Activity {
             estatura.setText(String.valueOf(Agua.estatura(this)));
             peso.requestFocus();
         }
+        if (mostrarForm) elegirSexo(Agua.sexo(this));
+    }
+
+    private void elegirSexo(String s) {
+        sexoSel = s;
+        btnHombre.setBackground(fondo(Agua.HOMBRE.equals(s) ? NARANJA : 0xFF3A3431, 12));
+        btnMujer.setBackground(fondo(Agua.MUJER.equals(s) ? NARANJA : 0xFF3A3431, 12));
     }
 
     @Override
@@ -255,6 +305,10 @@ public class MainActivity extends Activity {
         hsk.addView(filaSkins);
         skins.addView(hsk, ancho(10));
         pintarSkins();
+
+        // Mochila: ítems que has tocado en el widget y tus monedas.
+        mochila = tarjeta(col, "🎒 Mochila");
+        pintarMochila();
 
         // Viñeta guardada: vaso de agua + datos. Al tocarla se abre el formulario para modificar.
         vineta = new LinearLayout(this);
@@ -329,7 +383,7 @@ public class MainActivity extends Activity {
 
         col.addView(vineta, ancho(20));
 
-        formulario = tarjeta(col, "Tu peso y estatura");
+        formulario = tarjeta(col, "Tu peso, estatura y sexo");
         LinearLayout perfil = formulario;
         perfil.addView(texto("Peso (kg)", 14, GRIS), ancho(6));
         peso = campo("Ej: 60", InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
@@ -337,6 +391,19 @@ public class MainActivity extends Activity {
         perfil.addView(texto("Estatura (cm)", 14, GRIS), ancho(10));
         estatura = campo("Ej: 170", InputType.TYPE_CLASS_NUMBER);
         perfil.addView(estatura, ancho(4));
+        perfil.addView(texto("Sexo (ajusta la meta de agua)", 14, GRIS), ancho(10));
+        LinearLayout filaSexo = new LinearLayout(this);
+        btnHombre = boton("👨 Hombre", 0xFF3A3431);
+        btnMujer = boton("👩 Mujer", 0xFF3A3431);
+        btnHombre.setOnClickListener(v -> elegirSexo(Agua.HOMBRE));
+        btnMujer.setOnClickListener(v -> elegirSexo(Agua.MUJER));
+        LinearLayout.LayoutParams mitadH = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+        mitadH.rightMargin = px(6);
+        filaSexo.addView(btnHombre, mitadH);
+        LinearLayout.LayoutParams mitadM = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+        mitadM.leftMargin = px(6);
+        filaSexo.addView(btnMujer, mitadM);
+        perfil.addView(filaSexo, ancho(4));
         Button guardar = boton("Guardar", NARANJA);
         guardar.setOnClickListener(v -> guardar());
         perfil.addView(guardar, ancho(14));
@@ -403,6 +470,10 @@ public class MainActivity extends Activity {
 
         refrescar();
         editar(false);
+        if (Agua.meta(this) > 0 && Agua.sexo(this).isEmpty()) {
+            editar(true);
+            Toast.makeText(this, "Nuevo: elige hombre o mujer para ajustar tu meta de agua", Toast.LENGTH_LONG).show();
+        }
         pintarAlarmas();
 
         if (Build.VERSION.SDK_INT >= 33) {
@@ -427,7 +498,12 @@ public class MainActivity extends Activity {
             Toast.makeText(this, "Revisa los números: peso en kg y estatura en cm", Toast.LENGTH_SHORT).show();
             return;
         }
-        Agua.guardarPerfil(this, kg, cm);
+        if (sexoSel.isEmpty()) {
+            Toast.makeText(this, "Elige hombre o mujer", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Agua.guardarPerfil(this, kg, cm, sexoSel);
+        ClawdWidget.programarAgua(this);
         ((android.view.inputmethod.InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
                 .hideSoftInputFromWindow(peso.getWindowToken(), 0);
         refrescar();
@@ -455,9 +531,11 @@ public class MainActivity extends Activity {
         int m = Agua.meta(this);
         if (m > 0) {
             resumenMeta.setText(Agua.litros(m) + " L al día");
-            resumenDatos.setText(limpio(Agua.peso(this)) + " kg · " + Agua.estatura(this) + " cm · unos "
-                    + Math.round(m / 250f) + " vasos");
-            meta.setText("Cálculo: 35 ml por cada kilo de peso");
+            String sx = Agua.MUJER.equals(Agua.sexo(this)) ? " · mujer" : Agua.HOMBRE.equals(Agua.sexo(this)) ? " · hombre" : "";
+            resumenDatos.setText(limpio(Agua.peso(this)) + " kg · " + Agua.estatura(this) + " cm" + sx + " · "
+                    + Agua.vasos(this) + " vasos");
+            meta.setText("Según tu peso, estatura y sexo. Tu mascota te pedirá un vaso a las:\n"
+                    + Agua.horarioTexto(this));
             meta.setVisibility(View.VISIBLE);
             progreso.setText("💧 " + Agua.progreso(this));
             barra.setProgress(Math.min(1000, Agua.hoy(this) * 1000 / m));
@@ -474,6 +552,7 @@ public class MainActivity extends Activity {
         if (meta != null) refrescar();
         if (listaAlarmas != null) pintarAlarmas();
         if (filaSkins != null) pintarSkins();
+        if (mochila != null) pintarMochila();
         if (petArriba != null) Skins.poner(this, petArriba, 'W');
     }
 

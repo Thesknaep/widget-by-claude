@@ -25,17 +25,14 @@ public class ClawdWidget extends AppWidgetProvider {
     static final String TOCAR = "cl.yerko.clawd.TOCAR";
     static final String DIARIO = "cl.yerko.clawd.DIARIO";
     static final String AGUA = "cl.yerko.clawd.AGUA";
+    static final String PEDIR_AGUA = "cl.yerko.clawd.PEDIR_AGUA";
     static final String REVISAR = "cl.yerko.clawd.REVISAR";
+    static final String ITEM = "cl.yerko.clawd.ITEM";
     private static final String CANAL = "claude_diario";
-    private static final String CANAL_AGUA = "claude_agua";
+    // Android no deja cambiar el sonido de un canal ya creado: el canal con el sonido del vaso es uno nuevo.
+    private static final String CANAL_AGUA = "claude_agua_vaso";
+    private static final String CANAL_AGUA_VIEJO = "claude_agua";
     private static final Random RND = new Random();
-
-
-    private static final int[] ITEMS = {
-        R.drawable.item_llave, R.drawable.item_espada, R.drawable.item_pico,
-        R.drawable.item_moneda, R.drawable.item_gema, R.drawable.item_pocion,
-        R.drawable.item_corazon,
-    };
 
     private static final String[] INSISTE = {
         "%n, ¿tomaste agua? Toca la gota cuando tomes",
@@ -71,8 +68,11 @@ public class ClawdWidget extends AppWidgetProvider {
             rv.setDisplayedChild(R.id.pet, Agua.estado(ctx) == Agua.OK
                     ? Skins.inicioSalto(Skins.secuencia(Skins.actual(ctx))) : 0);
             rv.setDisplayedChild(R.id.texts, RND.nextInt(total));
-            rv.setDisplayedChild(R.id.items, RND.nextInt(ITEMS.length));
+            rv.setDisplayedChild(R.id.items, RND.nextInt(Math.max(1, total)));
             m.partiallyUpdateAppWidget(ids, rv);
+        } else if (ITEM.equals(a)) {
+            // Tocaste el ítem que tiene la mascota en la mano.
+            pintar(ctx, Items.tocar(ctx, intent.getIntExtra("item", 3)));
         } else if (Alarmas.SONAR.equals(a)) {
             Alarmas.sonar(ctx, intent);
         } else if (Alarmas.DETENER.equals(a)) {
@@ -83,12 +83,20 @@ public class ClawdWidget extends AppWidgetProvider {
             Actualizador.estado(ctx, intent);
         } else if (AGUA.equals(a)) {
             tomarAgua(ctx);
+        } else if (PEDIR_AGUA.equals(a)) {
+            // Hora del horario: si vas atrasado, la mascota te pide agua (con el sonido del vaso).
+            if (Agua.despierto() && Agua.atrasado(ctx)) {
+                Agua.marcarPedido(ctx);
+                prefs(ctx).edit().putInt("ultimoEstado", Agua.estado(ctx)).apply();
+                avisarAgua(ctx);
+                pintar(ctx, null);
+            }
+            programarAgua(ctx);
         } else if (REVISAR.equals(a)) {
             Actualizador.revisarEnFondo(ctx);
             int antes = prefs(ctx).getInt("ultimoEstado", Agua.OK);
             int ahora = Agua.estado(ctx);
             prefs(ctx).edit().putInt("ultimoEstado", ahora).apply();
-            if (ahora == Agua.SED) avisarAgua(ctx);
             if (ahora != antes || ahora != Agua.OK) pintar(ctx, null);
         } else if (DIARIO.equals(a)) {
             Actualizador.revisarEnFondo(ctx);
@@ -179,10 +187,13 @@ public class ClawdWidget extends AppWidgetProvider {
             int prev = -1;
             for (int k = 0; k < Math.max(1, total); k++) {
                 int it;
-                do { it = RND.nextInt(ITEMS.length); } while (it == prev);
+                do { it = RND.nextInt(Items.IDS.length); } while (it == prev);
                 prev = it;
                 RemoteViews fr = new RemoteViews(pkg, R.layout.item_frame);
-                fr.setImageViewResource(R.id.frame, ITEMS[it]);
+                fr.setImageViewResource(R.id.frame, Items.drawable(ctx, it));
+                Intent ti = new Intent(ctx, ClawdWidget.class).setAction(ITEM).putExtra("item", it);
+                fr.setOnClickPendingIntent(R.id.frame, PendingIntent.getBroadcast(ctx, 5000 + k, ti,
+                        PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT));
                 rv.addView(R.id.items, fr);
             }
         }
@@ -209,6 +220,23 @@ public class ClawdWidget extends AppWidgetProvider {
                 AlarmManager.INTERVAL_DAY, difundir(ctx, DIARIO, 2));
         am.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis() + AlarmManager.INTERVAL_FIFTEEN_MINUTES,
                 AlarmManager.INTERVAL_FIFTEEN_MINUTES, difundir(ctx, REVISAR, 4));
+        programarAgua(ctx);
+    }
+
+    /** Programa el próximo recordatorio de agua del horario (despierta al teléfono si está en reposo). */
+    static void programarAgua(Context ctx) {
+        AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pi = difundir(ctx, PEDIR_AGUA, 6);
+        if (Agua.meta(ctx) <= 0) {
+            am.cancel(pi);
+            return;
+        }
+        long t = Agua.proximoRecordatorio(ctx);
+        if (Build.VERSION.SDK_INT < 31 || am.canScheduleExactAlarms()) {
+            am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, t, pi);
+        } else {
+            am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, t, pi);
+        }
     }
 
     private static boolean puedeNotificar(Context ctx) {
@@ -218,20 +246,25 @@ public class ClawdWidget extends AppWidgetProvider {
 
     static void avisarAgua(Context ctx) {
         if (!puedeNotificar(ctx)) return;
-        long ahora = System.currentTimeMillis();
-        if (ahora - prefs(ctx).getLong("ultimoAviso", 0L) < 30 * 60_000L) return;
-        prefs(ctx).edit().putLong("ultimoAviso", ahora).apply();
         NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.createNotificationChannel(new NotificationChannel(CANAL_AGUA, "Recordatorio de agua",
-                NotificationManager.IMPORTANCE_HIGH));
+        nm.deleteNotificationChannel(CANAL_AGUA_VIEJO);
+        NotificationChannel canal = new NotificationChannel(CANAL_AGUA, "Recordatorio de agua",
+                NotificationManager.IMPORTANCE_HIGH);
+        canal.setSound(android.net.Uri.parse("android.resource://" + ctx.getPackageName() + "/" + R.raw.agua_vaso),
+                new android.media.AudioAttributes.Builder()
+                        .setUsage(android.media.AudioAttributes.USAGE_NOTIFICATION)
+                        .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build());
+        nm.createNotificationChannel(canal);
         Notification.Action tome = new Notification.Action.Builder(
                 Icon.createWithResource(ctx, R.drawable.agua), "Ya tomé (+250 ml)",
                 difundir(ctx, AGUA, 5)).build();
         Notification n = new Notification.Builder(ctx, CANAL_AGUA)
                 .setSmallIcon(R.drawable.ic_stat)
                 .setColor(0xFF4FA3F7)
-                .setContentTitle("¡" + Frases.trato(ctx) + ", toma agua!")
-                .setContentText("Llevas " + Agua.tiempoSinTomar(ctx) + " sin tomar. Vas en " + Agua.progreso(ctx))
+                .setContentTitle("💧 ¡" + Frases.trato(ctx) + ", es hora de tomar agua!")
+                .setContentText("Te toca el vaso " + Math.min(Agua.vasos(ctx), Agua.vasosQueTocan(ctx)) + " de "
+                        + Agua.vasos(ctx) + ". Vas en " + Agua.progreso(ctx))
                 .addAction(tome)
                 .setAutoCancel(true)
                 .build();
